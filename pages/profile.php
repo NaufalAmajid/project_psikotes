@@ -13,9 +13,12 @@
                 <div class="row">
                     <div class="col-sm-6">
                         <?php
-                        $photoProfile = $_SESSION['user']['photo_profile'] ?: 'assets/images/avatar-placehoder.jpg';
+                        $photoProfile = $_SESSION['user']['photo_profile'] ? 'myfiles/photo/' . $_SESSION['user']['photo_profile'] : 'assets/images/avatar-placehoder.jpg';
                         ?>
-                        <div class="profile-user-img"><img src="<?= $photoProfile ?>" alt="photo_profile_<?= $_SESSION['user']['username'] ?>" class="avatar-lg rounded-circle"></div>
+                        <div class="profile-user-img">
+                            <img src="<?= $photoProfile ?>" onclick="triggerClick(this)" id="placeholder-image" alt="photo_profile_<?= $_SESSION['user']['username'] ?>" class="avatar-lg rounded-circle">
+                            <input type="file" class="form-control d-none" onchange="displayImage(this)" id="photo_profile" name="photo_profile">
+                        </div>
                         <div class="">
                             <h4 class="mt-4 fs-17 ellipsis"><?= ucwords($_SESSION['user']['nama_lengkap']) ?></h4>
                             <p class="font-13"><?= $_SESSION['user']['email'] ?></p>
@@ -61,11 +64,11 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="change_password">Ganti Password</label>
-                                <input type="password" placeholder="..." id="change_password" disabled class="form-control">
+                                <input type="password" placeholder="..." id="change_password" readonly class="form-control">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="new_password">Konfirm Password Baru</label>
-                                <input type="password" placeholder="..." id="new_password" name="password" disabled class="form-control">
+                                <input type="password" placeholder="..." id="new_password" name="password" readonly class="form-control">
                             </div>
                         </div>
                         <h3 class="mt-4">Tentang</h3>
@@ -98,13 +101,71 @@
                                 <input type="date" value="<?= $_SESSION['user']['tanggal_lahir'] ?>" id="tanggal_lahir" name="tanggal_lahir" class="form-control">
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="submit"><i class="ri-save-line me-1 fs-16 lh-1"></i> Simpan Perubahan</button>
+                        <button class="btn btn-primary" type="button" onclick="changeAccountUser('<?= $_SESSION['user']['id_user'] ?>')"><i class="ri-save-line me-1 fs-16 lh-1"></i> Simpan Perubahan</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
     <!-- end page title -->
-
 </div>
 <!-- end row -->
+<script>
+    function triggerClick(e) {
+        document.querySelector('#photo_profile').click();
+    }
+
+    function displayImage(e) {
+        if (e.files[0]) {
+            var reader = new FileReader();
+            reader.onload = function(e) {
+                document.querySelector('#placeholder-image').setAttribute('src', e.target.result);
+            }
+            reader.readAsDataURL(e.files[0]);
+        }
+    }
+
+    function changeAccountUser(id_user) {
+        let form = $('#form-edit-profile').serializeArray();
+        let photo = $('#photo_profile').prop('files')[0];
+        let newForm = new FormData();
+        // check size photo if > 1mb then return false
+        if (photo != undefined) {
+            if (photo.size > 1000000) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Ukuran foto terlalu besar, maksimal 1MB',
+                });
+                return false;
+            }
+            newForm.append('photo', photo);
+        }
+        newForm.append('action', 'updateAccountUser');
+        newForm.append('id_user', id_user);
+        form.forEach((item) => {
+            newForm.append(item.name, item.value);
+        });
+
+        $.ajax({
+            url: 'classes/User.php',
+            type: 'POST',
+            data: newForm,
+            contentType: false,
+            processData: false,
+            success: function(response) {
+                let data = JSON.parse(response);
+                Swal.fire({
+                    icon: data.status,
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    if (data.status == 'success') {
+                        location.reload();
+                    }
+                });
+            }
+        });
+    }
+</script>
