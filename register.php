@@ -1,9 +1,15 @@
+<?php
+session_start();
+if (isset($_SESSION['is_login'])) {
+    header('location: dashboard.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="utf-8" />
-    <title>Register | Velonic - Bootstrap 5 Admin & Dashboard Template</title>
+    <title>Register | Psikotes</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="A fully responsive admin theme which can be used to build CRM, CMS,ERP etc." name="description" />
     <meta content="Techzaa" name="author" />
@@ -19,6 +25,9 @@
 
     <!-- Icons css -->
     <link href="assets/css/icons.min.css" rel="stylesheet" type="text/css" />
+
+    <!-- Plugin -->
+    <link rel="stylesheet" type="text/css" href="assets/vendor/toastify/toastify.min.css">
 </head>
 
 <body class="authentication-bg">
@@ -35,10 +44,10 @@
                             <div class="col-lg-6">
                                 <div class="d-flex flex-column h-100">
                                     <div class="auth-brand p-4">
-                                        <a href="index.html" class="logo-light">
+                                        <a href="register.php" class="logo-light">
                                             <img src="assets/images/logo.png" alt="logo" height="22">
                                         </a>
-                                        <a href="index.html" class="logo-dark">
+                                        <a href="register.php" class="logo-dark">
                                             <img src="assets/images/logo-dark.png" alt="dark logo" height="22">
                                         </a>
                                     </div>
@@ -47,7 +56,7 @@
                                         <p class="text-muted mb-3">Silahkan Buat Akun Disebelah Sini!</p>
 
                                         <!-- form -->
-                                        <form action="#">
+                                        <form id="form-register">
                                             <div class="mb-3">
                                                 <label for="fullname" class="form-label">Nama Lengkap</label>
                                                 <input class="form-control" type="text" name="nama_lengkap" id="fullname" placeholder="masukkan nama lengkap ..." required="" autofocus>
@@ -98,8 +107,57 @@
     <!-- Vendor js -->
     <script src="assets/js/vendor.min.js"></script>
 
+    <!-- Plugin js -->
+    <script type="text/javascript" src="assets/vendor/toastify/toastify-js.js"></script>
+    <script src="assets/vendor/sweetalert2/sweetalert2@11.js"></script>
+
     <!-- App js -->
     <script src="assets/js/app.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $("#form-register").submit(function(e) {
+                e.preventDefault();
+                let data = $(this).serializeArray();
+                let send = {};
+                let empty = [];
+                data.forEach(element => {
+                    if (element.value == "") {
+                        empty.push(element.name);
+                    } else {
+                        send[element.name] = element.value;
+                    }
+                });
+                send["action"] = "register";
+
+                if (empty.length > 0) {
+                    alert("Data " + empty.join(", ") + " tidak boleh kosong");
+                    return;
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: "classes/Authentication.php",
+                    data: send,
+                    success: function(response) {
+                        let res = JSON.parse(response);
+                        Swal.fire({
+                            icon: res.status,
+                            title: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            if (res.status == "success") {
+                                window.location.href = "index.php";
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 

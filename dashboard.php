@@ -1,4 +1,8 @@
 <?php
+session_start();
+if (!isset($_SESSION['is_login'])) {
+    header('location: index.php');
+}
 date_default_timezone_set('Asia/Jakarta');
 
 require_once 'config/connection.php';
@@ -96,23 +100,23 @@ $func = new Functions();
                                 <img src="assets/images/users/avatar-1.jpg" alt="user-image" width="32" class="rounded-circle">
                             </span>
                             <span class="d-lg-block d-none">
-                                <h5 class="my-0 fw-normal">Thomson <i class="ri-arrow-down-s-line d-none d-sm-inline-block align-middle"></i></h5>
+                                <h5 class="my-0 fw-normal"><?= ucwords($_SESSION['user']['nama_lengkap']) ?> <i class="ri-arrow-down-s-line d-none d-sm-inline-block align-middle"></i></h5>
                             </span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-end dropdown-menu-animated profile-dropdown">
                             <!-- item-->
                             <div class=" dropdown-header noti-title">
-                                <h6 class="text-overflow m-0">Welcome !</h6>
+                                <h6 class="text-overflow m-0"><?= ucwords($_SESSION['user']['email']) ?></h6>
                             </div>
 
                             <!-- item-->
-                            <a href="pages-profile.html" class="dropdown-item">
+                            <a href="?page=profile" class="dropdown-item">
                                 <i class="ri-account-circle-line fs-18 align-middle me-1"></i>
                                 <span>Akun Saya</span>
                             </a>
 
                             <!-- item-->
-                            <a href="auth-logout-2.html" class="dropdown-item">
+                            <a href="javascript:void(0)" onclick="logout()" class="dropdown-item">
                                 <i class="ri-logout-box-line fs-18 align-middle me-1"></i>
                                 <span>Logout</span>
                             </a>
@@ -193,8 +197,14 @@ $func = new Functions();
                     <?php endforeach; ?>
 
                     <li class="side-nav-title">Autentikasi</li>
+                    <li class="side-nav-item <?= isset($_GET['page']) && $_GET['page'] == 'profile' ? 'menuitem-active' : '' ?>">
+                        <a href="?page=profile" class="side-nav-link">
+                            <i class="ri-account-circle-line"></i>
+                            <span> Profile </span>
+                        </a>
+                    </li>
                     <li class="side-nav-item">
-                        <a href="javascript:void(0)" class="side-nav-link">
+                        <a href="javascript:void(0)" onclick="logout()" class="side-nav-link">
                             <i class="ri-logout-box-line"></i>
                             <span> Logout </span>
                         </a>
@@ -276,28 +286,61 @@ $func = new Functions();
 
     </div>
     <!-- END wrapper -->
+
+    <!-- Daterangepicker js -->
+    <!-- <script src="assets/vendor/daterangepicker/moment.min.js"></script>
+    <script src="assets/vendor/daterangepicker/daterangepicker.js"></script> -->
+
+    <!-- Plugin -->
+    <script src="assets/vendor/sweetalert2/sweetalert2@11.js"></script>
+
+    <!-- App js -->
+    <script src="assets/js/app.min.js"></script>
+
     <script>
         $(document).ready(function() {
             if (window.location.href.indexOf('page') == -1 && window.location.href.indexOf('mydashboard') == -1) {
                 window.location.href = 'dashboard.php?mydashboard';
             }
         });
+
+        function logout() {
+            Swal.fire({
+                title: 'Apakah Anda yakin?',
+                text: "Anda akan keluar dari sistem ini!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Ya, Keluar!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $.ajax({
+                        url: 'classes/Authentication.php',
+                        type: 'POST',
+                        data: {
+                            action: 'logout'
+                        },
+                        success: function(response) {
+                            let res = JSON.parse(response);
+                            Swal.fire({
+                                icon: res.status,
+                                title: res.message,
+                                showConfirmButton: false,
+                                timer: 1500
+                            }).then(() => {
+                                if (res.status == "success") {
+                                    window.location.href = "index.php";
+                                } else {
+                                    location.reload();
+                                }
+                            });
+                        }
+                    });
+                }
+            });
+        }
     </script>
-
-    <!-- Daterangepicker js -->
-    <!-- <script src="assets/vendor/daterangepicker/moment.min.js"></script>
-    <script src="assets/vendor/daterangepicker/daterangepicker.js"></script> -->
-
-    <!-- Vector Map js -->
-    <!-- <script src="assets/vendor/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js"></script>
-    <script src="assets/vendor/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js"></script> -->
-
-    <!-- Dashboard App js -->
-    <!-- <script src="assets/js/pages/dashboard.js"></script> -->
-
-
-    <!-- App js -->
-    <script src="assets/js/app.min.js"></script>
 
 </body>
 

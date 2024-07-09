@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 08 Jul 2024 pada 11.55
+-- Waktu pembuatan: 09 Jul 2024 pada 12.02
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -201,13 +201,23 @@ CREATE TABLE `user` (
   `username` varchar(50) DEFAULT NULL,
   `password` text DEFAULT NULL,
   `nik` varchar(50) DEFAULT NULL,
+  `photo_profile` text DEFAULT NULL,
   `nama_lengkap` varchar(100) DEFAULT NULL,
+  `no_hp` varchar(20) DEFAULT NULL,
   `jenis_kelamin` enum('Laki-laki','Perempuan') DEFAULT NULL,
   `tempat_lahir` varchar(20) DEFAULT NULL,
   `tanggal_lahir` date DEFAULT NULL,
   `role_id` int(11) DEFAULT NULL,
   `is_active` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `user`
+--
+
+INSERT INTO `user` (`id_user`, `email`, `username`, `password`, `nik`, `photo_profile`, `nama_lengkap`, `no_hp`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `role_id`, `is_active`) VALUES
+(1, 'izuku@gmail.com', 'izuku', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'izuku midoriya', NULL, NULL, NULL, NULL, 2, 1),
+(2, 'hanta@gmail.com', 'hanta', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'hanta sero', NULL, NULL, NULL, NULL, 2, 1);
 
 --
 -- Indexes for dumped tables
@@ -354,7 +364,7 @@ ALTER TABLE `submenu`
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

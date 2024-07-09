@@ -1,3 +1,9 @@
+<?php
+session_start();
+if (isset($_SESSION['is_login'])) {
+    header('location: dashboard.php');
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -34,10 +40,10 @@
                             <div class="col-lg-6">
                                 <div class="d-flex flex-column h-100">
                                     <div class="auth-brand p-4">
-                                        <a href="index.html" class="logo-light">
+                                        <a href="index.php" class="logo-light">
                                             <img src="assets/images/logo.png" alt="logo" height="22">
                                         </a>
-                                        <a href="index.html" class="logo-dark">
+                                        <a href="index.php" class="logo-dark">
                                             <img src="assets/images/logo-dark.png" alt="dark logo" height="22">
                                         </a>
                                     </div>
@@ -50,7 +56,7 @@
                                         <form id="form-login">
                                             <div class="mb-3">
                                                 <label for="emailaddress" class="form-label">Email / Username</label>
-                                                <input class="form-control" type="email" name="emailusername" id="emailusername" required="" placeholder="masukkan email / username ..." autofocus>
+                                                <input class="form-control" type="text" name="emailusername" id="emailusername" required="" placeholder="masukkan email / username ..." autofocus>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="password" class="form-label">Password</label>
@@ -90,8 +96,45 @@
     <!-- Vendor js -->
     <script src="assets/js/vendor.min.js"></script>
 
+    <!-- Plugin -->
+    <script src="assets/vendor/sweetalert2/sweetalert2@11.js"></script>
+
     <!-- App js -->
     <script src="assets/js/app.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('#form-login').submit(function(e) {
+                e.preventDefault();
+                let data = $(this).serializeArray();
+                let send = {};
+                $.each(data, function(i, field) {
+                    send[field.name] = field.value;
+                });
+                send['action'] = 'login';
+                $.ajax({
+                    url: 'classes/Authentication.php',
+                    type: 'POST',
+                    data: send,
+                    success: function(response) {
+                        let res = JSON.parse(response);
+                        Swal.fire({
+                            icon: res.status,
+                            title: res.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            if (res.status == "success") {
+                                window.location.href = "dashboard.php";
+                            } else {
+                                location.reload();
+                            }
+                        });
+                    }
+                });
+            });
+        });
+    </script>
 
 </body>
 
