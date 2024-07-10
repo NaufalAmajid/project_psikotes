@@ -16,19 +16,10 @@ class User
         return $res;
     }
 
-    public function getAllUser($where = null)
+    public function getUserById($id_user, $where = null)
     {
-        $where = $where ? "WHERE $where" : '';
-        $query = "SELECT * FROM user JOIN role ON user.role_id = role.id_role $where";
-        $result = $this->conn->query($query);
-        $result->execute();
-
-        return $result->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    public function getUserById($id_user)
-    {
-        $query = "SELECT * FROM user WHERE id_user = $id_user";
+        $where = $where ?: '';
+        $query = "SELECT * FROM user JOIN role ON user.role_id = role.id_role WHERE id_user = $id_user $where";
         $result = $this->conn->query($query);
         $result->execute();
 
@@ -37,7 +28,7 @@ class User
 
     public function checkEmailUsername($username, $email)
     {
-        $query = "SELECT * FROM user WHERE username = '$username' OR email = '$email'";
+        $query = "SELECT * FROM user WHERE (username = '$username' OR email = '$email') AND is_active = 1";
         $result = $this->conn->query($query);
         $result->execute();
 
@@ -77,7 +68,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                         echo json_encode([
                             'status' => 'error',
                             'message' => 'Ukuran file terlalu besar',
-                            'icon' => 'bx bx-error'
                         ]);
                         exit;
                     }
@@ -85,7 +75,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                     echo json_encode([
                         'status' => 'error',
                         'message' => 'Terjadi kesalahan saat mengupload file',
-                        'icon' => 'bx bx-error'
                     ]);
                     exit;
                 }
@@ -93,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 echo json_encode([
                     'status' => 'error',
                     'message' => 'Ekstensi file tidak diizinkan',
-                    'icon' => 'bx bx-error'
                 ]);
                 exit;
             }
@@ -107,7 +95,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 echo json_encode([
                     'status' => 'info',
                     'message' => 'username / email sudah digunakan!',
-                    'icon' => 'bx bx-info-circle'
                 ]);
                 exit;
             }
@@ -139,16 +126,60 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
         if ($updateUser) {
             $_SESSION['user'] = $user->getUserById($_SESSION['user']['id_user']);
+
             $res = [
                 'status' => 'success',
                 'message' => 'Data berhasil diubah',
-                'icon' => 'bx bx-check'
             ];
+
+            if ($_POST['password'] != '') {
+                session_destroy();
+            }
         } else {
             $res = [
                 'status' => 'error',
                 'message' => 'Data gagal diubah',
-                'icon' => 'bx bx-error'
+            ];
+        }
+
+        echo json_encode($res);
+    }
+
+    if ($_POST['action'] == 'deleteAccount') {
+        $editUser = [
+            'is_active' => 0
+        ];
+        $where = [
+            'id_user' => $_POST['id_user']
+        ];
+        $updateUser = $user->updateUser('user', $editUser, $where);
+
+        if ($updateUser) {
+            session_destroy();
+            $res = [
+                'status' => 'success',
+                'message' => 'Akun anda berhasil dihapus!',
+            ];
+        } else {
+            $res = [
+                'status' => 'success',
+                'message' => 'Akun anda berhasil dihapus!',
+            ];
+        }
+
+        echo json_encode($res);
+    }
+
+    if ($_POST['action'] == 'checkPassword') {
+        $password = md5($_POST['real_password']);
+        $checkPassword = $user->getUserById($_POST['id_user'], "AND password = '$password'");
+        if ($checkPassword) {
+            $res = [
+                'status' => 'success'
+            ];
+        } else {
+            $res = [
+                'status' => 'error'
             ];
         }
 

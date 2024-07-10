@@ -27,7 +27,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="d-flex justify-content-end align-items-center gap-2">
-                            <button type="button" class="btn btn-soft-danger">
+                            <button type="button" class="btn btn-soft-danger" onclick="deleteAccount('<?= $_SESSION['user']['id_user'] ?>')">
                                 <i class="ri-user-unfollow-line align-text-bottom me-1 fs-16 lh-1"></i>
                                 Hapus Akun
                             </button>
@@ -59,8 +59,9 @@
                                 <input type="text" value="<?= $_SESSION['user']['username'] ?>" id="username" name="username" class="form-control">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label" for="password">Password</label>
-                                <input type="password" placeholder="..." id="password" class="form-control">
+                                <label class="form-label" for="real_password">Password</label>
+                                <input type="password" placeholder="..." id="real_password" class="form-control" onkeyup="checkRealPassword('<?= $_SESSION['user']['id_user'] ?>')">
+                                <small class="text-danger d-none" id="notif-check-real-password">*password salah</small>
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="change_password">Ganti Password</label>
@@ -68,7 +69,7 @@
                             </div>
                             <div class="mb-3">
                                 <label class="form-label" for="new_password">Konfirm Password Baru</label>
-                                <input type="password" placeholder="..." id="new_password" name="password" readonly class="form-control">
+                                <input type="password" placeholder="..." id="new_password" onkeyup="checkSamePassword()" name="password" readonly class="form-control">
                             </div>
                         </div>
                         <h3 class="mt-4">Tentang</h3>
@@ -101,7 +102,7 @@
                                 <input type="date" value="<?= $_SESSION['user']['tanggal_lahir'] ?>" id="tanggal_lahir" name="tanggal_lahir" class="form-control">
                             </div>
                         </div>
-                        <button class="btn btn-primary" type="button" onclick="changeAccountUser('<?= $_SESSION['user']['id_user'] ?>')"><i class="ri-save-line me-1 fs-16 lh-1"></i> Simpan Perubahan</button>
+                        <button class="btn btn-primary" type="button" id="btn-update-account" onclick="changeAccountUser('<?= $_SESSION['user']['id_user'] ?>')"><i class="ri-save-line me-1 fs-16 lh-1"></i> Simpan Perubahan</button>
                     </form>
                 </div>
             </div>
@@ -167,5 +168,83 @@
                 });
             }
         });
+    }
+
+    function deleteAccount(id_user) {
+        Swal.fire({
+            title: "Apakah anda yakin?",
+            text: "Akun yang sudah terhapus tidak dapat dikembalikan, kecuali konfirmasi admin!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Ya, Hapus",
+            cancelButtonText: "Batal"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: 'classes/User.php',
+                    type: 'POST',
+                    data: {
+                        id_user: id_user,
+                        action: 'deleteAccount'
+                    },
+                    success: function(response) {
+                        let data = JSON.parse(response);
+                        Swal.fire({
+                            icon: data.status,
+                            title: data.message,
+                            showConfirmButton: false,
+                            timer: 1500
+                        }).then(() => {
+                            if (data.status == 'success') {
+                                location.reload();
+                            }
+                        });
+                    }
+                })
+            }
+        });
+    }
+
+    function checkRealPassword(id_user) {
+        let real_password = $('#real_password').val()
+        $.ajax({
+            url: 'classes/User.php',
+            type: 'POST',
+            data: {
+                id_user: id_user,
+                real_password: real_password,
+                action: 'checkPassword'
+            },
+            success: function(response) {
+                let data = JSON.parse(response);
+                if (data.status == 'success') {
+                    $('#notif-check-real-password').addClass('d-none');
+                    $('#change_password').removeAttr('readonly');
+                    $('#new_password').removeAttr('readonly');
+                } else {
+                    $('#notif-check-real-password').removeClass('d-none');
+                    $('#change_password').prop('readonly', true)
+                    $('#new_password').prop('readonly', true)
+                    $('#change_password').val('')
+                    $('#new_password').val('')
+                }
+            }
+        })
+    }
+
+    function checkSamePassword() {
+        let change_password = $('#change_password').val()
+        let new_password = $('#new_password').val()
+        if (change_password == new_password) {
+            $('#new_password').removeClass('is-invalid')
+            $('#new_password').addClass('is-valid')
+            $('#btn-update-account').removeAttr('disabled')
+        } else {
+            $('#new_password').removeClass('is-valid')
+            $('#new_password').addClass('is-invalid')
+            $('#btn-update-account').attr('disabled', true)
+        }
     }
 </script>

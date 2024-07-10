@@ -40,7 +40,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $nama_lengkap   = $_POST['nama_lengkap'];
         $password       = md5($_POST['password']);
 
-        $checkUser = $auth->getAllUser("username = '$username' OR email = '$email' AND role_id = 2");
+        $checkUser = $auth->getAllUser("username = '$username' OR email = '$email' AND role_id = 2 AND is_active = 1");
         if (count($checkUser) > 0) {
             $res = [
                 'status' => 'error',
@@ -76,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $emailusername = $_POST['emailusername'];
         $password = md5($_POST['password']);
 
-        $checkUser = $auth->getAllUser("email = '$emailusername' OR username = '$emailusername' AND role_id = 2");
+        $checkUser = $auth->getAllUser("email = '$emailusername' OR username = '$emailusername' AND role_id = 2 AND is_active = 1");
         if (count($checkUser) > 0) {
             if ($checkUser[0]['password'] == $password) {
                 $_SESSION['user'] = $checkUser[0];
