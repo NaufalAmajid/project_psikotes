@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 09 Jul 2024 pada 12.02
--- Versi server: 10.4.32-MariaDB
--- Versi PHP: 8.2.12
+-- Generation Time: Jul 11, 2024 at 06:16 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -24,20 +24,27 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `bank_soal`
+-- Table structure for table `bank_soal`
 --
 
 CREATE TABLE `bank_soal` (
   `id_bank` int(11) NOT NULL,
-  `nama_bank` varchar(50) DEFAULT NULL,
+  `nama_soal` varchar(50) DEFAULT NULL,
   `no_soal` varchar(50) DEFAULT NULL,
   `status_bank` int(11) DEFAULT 1
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `bank_soal`
+--
+
+INSERT INTO `bank_soal` (`id_bank`, `nama_soal`, `no_soal`, `status_bank`) VALUES
+(1, 'Bank Soal 20240711211033', '20240711211033', 1);
+
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `hak_akses`
+-- Table structure for table `hak_akses`
 --
 
 CREATE TABLE `hak_akses` (
@@ -47,7 +54,7 @@ CREATE TABLE `hak_akses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `hak_akses`
+-- Dumping data for table `hak_akses`
 --
 
 INSERT INTO `hak_akses` (`id`, `role_id`, `menu_id`) VALUES
@@ -58,7 +65,7 @@ INSERT INTO `hak_akses` (`id`, `role_id`, `menu_id`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `jawaban`
+-- Table structure for table `jawaban`
 --
 
 CREATE TABLE `jawaban` (
@@ -71,7 +78,7 @@ CREATE TABLE `jawaban` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `kategori_soal`
+-- Table structure for table `kategori_soal`
 --
 
 CREATE TABLE `kategori_soal` (
@@ -80,7 +87,7 @@ CREATE TABLE `kategori_soal` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `kategori_soal`
+-- Dumping data for table `kategori_soal`
 --
 
 INSERT INTO `kategori_soal` (`id_kategori`, `nama_kategori`) VALUES
@@ -91,7 +98,7 @@ INSERT INTO `kategori_soal` (`id_kategori`, `nama_kategori`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `laporan`
+-- Table structure for table `laporan`
 --
 
 CREATE TABLE `laporan` (
@@ -110,7 +117,7 @@ CREATE TABLE `laporan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `menu`
+-- Table structure for table `menu`
 --
 
 CREATE TABLE `menu` (
@@ -121,7 +128,7 @@ CREATE TABLE `menu` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `menu`
+-- Dumping data for table `menu`
 --
 
 INSERT INTO `menu` (`id_menu`, `nama_menu`, `direktori`, `icon`) VALUES
@@ -132,7 +139,7 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `direktori`, `icon`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `pengerjaan`
+-- Table structure for table `pengerjaan`
 --
 
 CREATE TABLE `pengerjaan` (
@@ -146,7 +153,7 @@ CREATE TABLE `pengerjaan` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `role`
+-- Table structure for table `role`
 --
 
 CREATE TABLE `role` (
@@ -155,7 +162,7 @@ CREATE TABLE `role` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `role`
+-- Dumping data for table `role`
 --
 
 INSERT INTO `role` (`id_role`, `nama_role`) VALUES
@@ -165,21 +172,26 @@ INSERT INTO `role` (`id_role`, `nama_role`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `soal`
+-- Table structure for table `soal`
 --
 
 CREATE TABLE `soal` (
   `id_soal` int(11) NOT NULL,
   `no_soal` varchar(50) DEFAULT NULL,
   `soal` text DEFAULT NULL,
+  `jawaban_a` text DEFAULT NULL,
+  `jawaban_b` text DEFAULT NULL,
+  `jawaban_c` text DEFAULT NULL,
+  `jawaban_d` text DEFAULT NULL,
   `file` text DEFAULT NULL,
-  `kategori_id` int(11) DEFAULT NULL
+  `kategori_id` int(11) DEFAULT NULL,
+  `kunci_jawaban` varchar(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `submenu`
+-- Table structure for table `submenu`
 --
 
 CREATE TABLE `submenu` (
@@ -192,7 +204,7 @@ CREATE TABLE `submenu` (
 -- --------------------------------------------------------
 
 --
--- Struktur dari tabel `user`
+-- Table structure for table `user`
 --
 
 CREATE TABLE `user` (
@@ -212,7 +224,7 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data untuk tabel `user`
+-- Dumping data for table `user`
 --
 
 INSERT INTO `user` (`id_user`, `email`, `username`, `password`, `nik`, `photo_profile`, `nama_lengkap`, `no_hp`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `role_id`, `is_active`) VALUES
@@ -224,13 +236,13 @@ INSERT INTO `user` (`id_user`, `email`, `username`, `password`, `nik`, `photo_pr
 --
 
 --
--- Indeks untuk tabel `bank_soal`
+-- Indexes for table `bank_soal`
 --
 ALTER TABLE `bank_soal`
   ADD PRIMARY KEY (`id_bank`);
 
 --
--- Indeks untuk tabel `hak_akses`
+-- Indexes for table `hak_akses`
 --
 ALTER TABLE `hak_akses`
   ADD PRIMARY KEY (`id`),
@@ -238,7 +250,7 @@ ALTER TABLE `hak_akses`
   ADD KEY `hak_akses_menu_FK` (`menu_id`);
 
 --
--- Indeks untuk tabel `jawaban`
+-- Indexes for table `jawaban`
 --
 ALTER TABLE `jawaban`
   ADD PRIMARY KEY (`id_jawaban`),
@@ -246,158 +258,158 @@ ALTER TABLE `jawaban`
   ADD KEY `jawaban_soal_FK` (`soal_id`);
 
 --
--- Indeks untuk tabel `kategori_soal`
+-- Indexes for table `kategori_soal`
 --
 ALTER TABLE `kategori_soal`
   ADD PRIMARY KEY (`id_kategori`);
 
 --
--- Indeks untuk tabel `laporan`
+-- Indexes for table `laporan`
 --
 ALTER TABLE `laporan`
   ADD PRIMARY KEY (`id_laporan`);
 
 --
--- Indeks untuk tabel `menu`
+-- Indexes for table `menu`
 --
 ALTER TABLE `menu`
   ADD PRIMARY KEY (`id_menu`);
 
 --
--- Indeks untuk tabel `pengerjaan`
+-- Indexes for table `pengerjaan`
 --
 ALTER TABLE `pengerjaan`
   ADD PRIMARY KEY (`id_pengerjaan`);
 
 --
--- Indeks untuk tabel `role`
+-- Indexes for table `role`
 --
 ALTER TABLE `role`
   ADD PRIMARY KEY (`id_role`);
 
 --
--- Indeks untuk tabel `soal`
+-- Indexes for table `soal`
 --
 ALTER TABLE `soal`
   ADD PRIMARY KEY (`id_soal`),
   ADD KEY `soal_kategori_soal_FK` (`kategori_id`);
 
 --
--- Indeks untuk tabel `submenu`
+-- Indexes for table `submenu`
 --
 ALTER TABLE `submenu`
   ADD PRIMARY KEY (`id_submenu`),
   ADD KEY `submenu_menu_FK` (`menu_id`);
 
 --
--- Indeks untuk tabel `user`
+-- Indexes for table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id_user`),
   ADD KEY `user_role_FK` (`role_id`);
 
 --
--- AUTO_INCREMENT untuk tabel yang dibuang
+-- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT untuk tabel `bank_soal`
+-- AUTO_INCREMENT for table `bank_soal`
 --
 ALTER TABLE `bank_soal`
-  MODIFY `id_bank` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_bank` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT untuk tabel `hak_akses`
+-- AUTO_INCREMENT for table `hak_akses`
 --
 ALTER TABLE `hak_akses`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `jawaban`
+-- AUTO_INCREMENT for table `jawaban`
 --
 ALTER TABLE `jawaban`
   MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `kategori_soal`
+-- AUTO_INCREMENT for table `kategori_soal`
 --
 ALTER TABLE `kategori_soal`
   MODIFY `id_kategori` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `laporan`
+-- AUTO_INCREMENT for table `laporan`
 --
 ALTER TABLE `laporan`
   MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `menu`
+-- AUTO_INCREMENT for table `menu`
 --
 ALTER TABLE `menu`
   MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT untuk tabel `pengerjaan`
+-- AUTO_INCREMENT for table `pengerjaan`
 --
 ALTER TABLE `pengerjaan`
   MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `role`
+-- AUTO_INCREMENT for table `role`
 --
 ALTER TABLE `role`
   MODIFY `id_role` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT untuk tabel `soal`
+-- AUTO_INCREMENT for table `soal`
 --
 ALTER TABLE `soal`
-  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
--- AUTO_INCREMENT untuk tabel `submenu`
+-- AUTO_INCREMENT for table `submenu`
 --
 ALTER TABLE `submenu`
   MODIFY `id_submenu` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT untuk tabel `user`
+-- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
+-- Constraints for dumped tables
 --
 
 --
--- Ketidakleluasaan untuk tabel `hak_akses`
+-- Constraints for table `hak_akses`
 --
 ALTER TABLE `hak_akses`
   ADD CONSTRAINT `hak_akses_menu_FK` FOREIGN KEY (`menu_id`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `hak_akses_role_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`id_role`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `jawaban`
+-- Constraints for table `jawaban`
 --
 ALTER TABLE `jawaban`
   ADD CONSTRAINT `jawaban_soal_FK` FOREIGN KEY (`soal_id`) REFERENCES `soal` (`id_soal`) ON DELETE CASCADE ON UPDATE CASCADE,
   ADD CONSTRAINT `jawaban_user_FK` FOREIGN KEY (`duser_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `soal`
+-- Constraints for table `soal`
 --
 ALTER TABLE `soal`
   ADD CONSTRAINT `soal_kategori_soal_FK` FOREIGN KEY (`kategori_id`) REFERENCES `kategori_soal` (`id_kategori`);
 
 --
--- Ketidakleluasaan untuk tabel `submenu`
+-- Constraints for table `submenu`
 --
 ALTER TABLE `submenu`
   ADD CONSTRAINT `submenu_menu_FK` FOREIGN KEY (`menu_id`) REFERENCES `menu` (`id_menu`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Ketidakleluasaan untuk tabel `user`
+-- Constraints for table `user`
 --
 ALTER TABLE `user`
   ADD CONSTRAINT `user_role_FK` FOREIGN KEY (`role_id`) REFERENCES `role` (`id_role`) ON DELETE CASCADE ON UPDATE CASCADE;
