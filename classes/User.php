@@ -16,6 +16,32 @@ class User
         return $res;
     }
 
+    public function insertUser($table, $data)
+    {
+        $db = DB::getInstance();
+        $res = $db->insert($table, $data);
+        return $res;
+    }
+
+    public function getAllUser($where = null)
+    {
+        $where = $where ?: '';
+        $query = "SELECT * FROM user JOIN role ON user.role_id = role.id_role WHERE is_active = 1 $where";
+        $result = $this->conn->query($query);
+        $result->execute();
+
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getAllRole()
+    {
+        $query = "SELECT * FROM role";
+        $result = $this->conn->query($query);
+        $result->execute();
+
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getUserById($id_user, $where = null)
     {
         $where = $where ?: '';
@@ -42,6 +68,72 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     require_once '../classes/DB.php';
 
     $user = new User();
+
+    if ($_POST['action'] == 'saveUser') {
+        $checkUser = $user->checkEmailUsername($_POST['username'], $_POST['email']);
+        if ($checkUser) {
+            if ($checkUser['id_user'] != $_POST['id_user']) {
+                echo json_encode([
+                    'status' => 'info',
+                    'message' => 'username / email sudah digunakan!',
+                ]);
+                exit;
+            }
+        }
+
+        $insertUser = $_POST;
+        unset($insertUser['action'], $insertUser['id_user'], $insertUser['statusForm']);
+        if (isset($_POST['password'])) {
+            $insertUser['password'] = md5($insertUser['password']);
+        }
+
+        if ($_POST['statusForm'] == 'add') {
+            $saveUser = $user->insertUser('user', $insertUser);
+        } else {
+            $where = [
+                'id_user' => $_POST['id_user']
+            ];
+            $saveUser = $user->updateUser('user', $insertUser, $where);
+        }
+
+        if ($saveUser) {
+            $res = [
+                'status' => 'success',
+                'message' => 'Data berhasil disimpan',
+            ];
+        } else {
+            $res = [
+                'status' => 'error',
+                'message' => 'Data gagal disimpan',
+            ];
+        }
+
+        echo json_encode($res);
+    }
+
+    if ($_POST['action'] == 'deleteUser') {
+        $editUser = [
+            'is_active' => 0
+        ];
+        $where = [
+            'id_user' => $_POST['id_user']
+        ];
+        $updateUser = $user->updateUser('user', $editUser, $where);
+
+        if ($updateUser) {
+            $res = [
+                'status' => 'success',
+                'message' => 'Data berhasil dihapus!',
+            ];
+        } else {
+            $res = [
+                'status' => 'error',
+                'message' => 'Data gagal dihapus!',
+            ];
+        }
+
+        echo json_encode($res);
+    }
 
     if ($_POST['action'] == 'updateAccountUser') {
         // check photo

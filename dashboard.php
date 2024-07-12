@@ -177,7 +177,7 @@ $func = new Functions();
                     </li>
 
                     <?php
-                    $menus = $menu->read(1);
+                    $menus = $menu->read($_SESSION['user']['role_id']);
                     ?>
                     <?php foreach ($menus as $men) : ?>
                         <?php if (isset($men['submenu'])) : ?>
@@ -273,6 +273,8 @@ $func = new Functions();
                 <!-- container -->
 
             </div>
+            <!-- Center modal content -->
+            <div class="modal fade" data-bs-backdrop="static" id="myModal"></div><!-- /.modal -->
             <!-- content -->
 
             <!-- Footer Start -->
