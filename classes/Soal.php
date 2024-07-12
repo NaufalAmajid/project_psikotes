@@ -54,6 +54,21 @@ class Soal
         return $result->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllSoal()
+    {
+        $query = "SELECT 
+                * 
+                FROM 
+                soal so 
+                LEFT JOIN kategori_soal ks ON so.kategori_id = ks.id_kategori 
+                ORDER BY 
+                so.id_soal ASC";
+        $result = $this->conn->query($query);
+        $result->execute();
+
+        return $result->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getBankSoalByNoSoal($no_soal)
     {
         $query = "SELECT * FROM bank_soal WHERE no_soal = :no_soal";
@@ -127,6 +142,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     require_once '../classes/DB.php';
 
     $soalClass = new Soal();
+
+    if ($_POST['action'] == 'createNewSoal') {
+        $no_soal = date('YmdHis');
+        $newSoal = $soalClass->saveSoal('soal', ['no_soal' => $no_soal]);
+        if ($newSoal) {
+            echo json_encode(['status' => 'success', 'message' => 'Soal baru berhasil dibuat!']);
+        } else {
+            echo json_encode(['status' => 'error', 'message' => 'Soal baru gagal dibuat!']);
+        }
+    }
+
+    if ($_POST['action'] == 'getAllPilgan') {
+        $pilgans = $soalClass->getPilgan();
+        $alfaPilgan = [];
+        foreach ($pilgans as $pil) {
+            $getLast = explode('_', $pil['COLUMN_NAME']);
+            $alfaPilgan[] = $getLast[1];
+        }
+        echo json_encode($alfaPilgan);
+    }
+
+    if ($_POST['action'] == 'saveSoalNew') {
+        $req = json_decode($_POST['data'], true);
+        echo json_encode($_FILES);
+        exit;
+    }
 
     if ($_POST['action'] == 'saveSoal') {
         $nama_soal      = $_POST['nama_soal'];
