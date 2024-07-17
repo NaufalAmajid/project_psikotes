@@ -135,6 +135,25 @@ class Soal
 
         return $result->fetch(PDO::FETCH_ASSOC);
     }
+
+    public function deleteDirectory($dir)
+    {
+        if (!file_exists($dir)) {
+            return false;
+        }
+
+        if (!is_dir($dir)) {
+            return unlink($dir);
+        }
+
+        $items = array_diff(scandir($dir), ['.', '..']);
+        foreach ($items as $item) {
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+            is_dir($path) ? $this->deleteDirectory($path) : unlink($path);
+        }
+
+        return rmdir($dir);
+    }
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
@@ -164,144 +183,206 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     }
 
     if ($_POST['action'] == 'saveSoalNew') {
-        $req = json_decode($_POST['data'], true);
-        echo json_encode($_FILES);
-        exit;
-    }
-
-    if ($_POST['action'] == 'saveSoal') {
-        $nama_soal      = $_POST['nama_soal'];
-        $no_soal        = $_POST['no_soal'];
-        $soal           = $_POST['soal'];
-        $kategori_id    = $_POST['kategori_id'];
-        $pilgans         = json_decode($_POST['pilgan'], true);
-
-        if (isset($_FILES['gambar'])) {
-            // check new directory for gambar soal
-            $gambar_new_destination = '../myfiles/soal/';
-            if (!is_dir($gambar_new_destination)) {
-                mkdir($gambar_new_destination, 0777, true);
-            }
-
-            $errors     = [];
-            $newGambars = [];
-            $gambars    = $_FILES['gambar'];
-
-            // manage gambars
-            foreach ($gambars['name'] as $key => $filename) {
-                // get file properties
-                $fileTmp        = $gambars['tmp_name'][$key];
-                $fileType       = $gambars['type'][$key];
-                $fileSize       = $gambars['size'][$key];
-                $fileError      = $gambars['error'][$key];
-                $fileExt        = explode('.', $filename);
-                $fileActualExt  = strtolower(end($fileExt));
-                $fileAllowed    = ['jpg', 'jpeg', 'png'];
-
-                // check file extension
-                if (in_array($fileActualExt, $fileAllowed)) {
-                    if ($fileError === 0) {
-                        if ($fileSize < 1000000) {
-                            // create new name
-                            $newFilename        = $no_soal . '_' . $key . '.' . $fileActualExt;
-                            $fileDestination    = $gambar_new_destination . $newFilename;
-                            $newGambars[]       = [
-                                'nama_gambar'   => $newFilename,
-                                'path_gambar'   => $fileTmp,
-                                'destination'   => $fileDestination
-                            ];
-                        } else {
-                            $errors[] = $filename . ' Ukuran file terlalu besar! \n';
-                        }
-                    } else {
-                        $errors[] = $filename . ' Terjadi kesalahan saat mengunggah file! \n';
-                    }
-                } else {
-                    $errors[] = $filename . ' Format file tidak didukung! Hanya JPG, JPEG, PNG! \n';
-                }
-            }
-
-            // check error
-            if (count($errors) > 0) {
-                echo json_encode(['status' => 'error', 'message' => $errors]);
-                exit;
-            }
-
-            // merge name to save with format json
-            $mergeNameGambars = [];
-            foreach ($newGambars as $gambar) {
-                $mergeNameGambars[] = $gambar['nama_gambar'];
-            }
-            $nama_gambar = json_encode($mergeNameGambars);
-        }
-
-        // check bank soal
-        $bank_soal = $soalClass->getBankSoalByNoSoal($no_soal);
-        $dataBankSoal = [
-            'nama_soal'    => $nama_soal ? $nama_soal : 'Bank Soal ' . $no_soal,
-            'no_soal'      => $no_soal,
-        ];
-        if ($bank_soal) {
-            $soalClass->updateSoal('bank_soal', $dataBankSoal, ['no_soal' => $no_soal]);
-        } else {
-            $soalClass->saveSoal('bank_soal', $dataBankSoal);
-        }
-
-        // manage soal
-        $dataSoal = [
-            'no_soal'       => $no_soal,
+        $id_soal        = $_POST['id_soal'];
+        $dataReq        = json_decode($_POST['data'], true);
+        $soal           = $dataReq['soal'];
+        $kategori_id    = $dataReq['kategori_soal'];
+        $dataInsert     = [
             'soal'          => $soal,
             'kategori_id'   => $kategori_id,
+            'kunci_jawaban' => isset($dataReq['kunci-' . $id_soal]) ? $dataReq['kunci-' . $id_soal] : NULL
         ];
-
-        // soal pilihan ganda
-        $getAlfaPilgan = $soalClass->getPilgan();
+        $pilgans = $soalClass->getPilgan();
         $alfaPilgan = [];
-        foreach ($getAlfaPilgan as $pil) {
+        foreach ($pilgans as $pil) {
             $getLast = explode('_', $pil['COLUMN_NAME']);
             $alfaPilgan[] = $getLast[1];
         }
-        foreach ($alfaPilgan as $key => $alfa) {
-            $dataSoal['jawaban_' . $alfa] = $pilgans[$key] ?: NULL;
-        }
-        $dataSoal['kunci_jawaban'] = $_POST['kunci_jawaban'] ?: NULL;
+        if ($kategori_id == 1) {
+            if (isset($_FILES)) {
+                if (isset($_FILES['gambar'])) {
+                    // MANAGE GAMBAR SOAL
+                    // check new directory for gambar soal
+                    $gambar_new_destination = '../myfiles/soal/' . $id_soal . '/';
+                    if (!is_dir($gambar_new_destination)) {
+                        mkdir($gambar_new_destination, 0777, true);
+                    }
 
-        // check gambar
-        if (isset($nama_gambar)) {
-            $dataSoal['file'] = $nama_gambar;
-            foreach ($newGambars as $gambar) {
-                move_uploaded_file($gambar['path_gambar'], $gambar['destination']);
+                    $errors     = [];
+                    $newGambars = [];
+                    $gambars    = $_FILES['gambar'];
+                    foreach ($gambars['name'] as $key => $filename) {
+                        // get file properties
+                        $fileTmp        = $gambars['tmp_name'][$key];
+                        $fileType       = $gambars['type'][$key];
+                        $fileSize       = $gambars['size'][$key];
+                        $fileError      = $gambars['error'][$key];
+                        $fileExt        = explode('.', $filename);
+                        $fileActualExt  = strtolower(end($fileExt));
+                        $fileAllowed    = ['jpg', 'jpeg', 'png'];
+                        if (in_array($fileActualExt, $fileAllowed)) {
+                            if ($fileError === 0) {
+                                if ($fileSize < 1000000) {
+                                    // create new name
+                                    $newFilename        = $id_soal . '_' . uniqid('', true) . '.' . $fileActualExt;
+                                    $fileDestination    = $gambar_new_destination . $newFilename;
+                                    $newGambars[]       = [
+                                        'nama_gambar'   => $newFilename,
+                                        'path_gambar'   => $fileTmp,
+                                        'destination'   => $fileDestination
+                                    ];
+                                } else {
+                                    $errors[] = $filename . ' Ukuran file terlalu besar! \n';
+                                }
+                            } else {
+                                $errors[] = $filename . ' Terjadi kesalahan saat mengunggah file! \n';
+                            }
+                        } else {
+                            $errors[] = $filename . ' Format file tidak didukung! Hanya JPG, JPEG, PNG! \n';
+                        }
+                    }
+
+                    // check error
+                    if (count($errors) > 0) {
+                        $errors = implode('', $errors);
+                        echo json_encode(['status' => 'error', 'message' => $errors]);
+                        exit;
+                    }
+
+                    // merge name to save with format json
+                    $mergeNameGambars = [];
+                    foreach ($newGambars as $gambar) {
+                        $mergeNameGambars[] = $gambar['nama_gambar'];
+                    }
+                    $nama_gambar = json_encode($mergeNameGambars);
+                    $dataInsert['file'] = $nama_gambar;
+                    // END MANAGE GAMBAR SOAL
+
+                    // MANAGE GAMBAR PILIHAN GANDA
+                    $issetFilePilgan = [];
+                    $notIssetFilePilgan = [];
+                    foreach ($alfaPilgan as $alfa) {
+                        if (isset($_FILES['pilgan_file_' . $alfa . '_' . $id_soal])) {
+                            $issetFilePilgan[$alfa] = $_FILES['pilgan_file_' . $alfa . '_' . $id_soal];
+                        } else {
+                            $notIssetFilePilgan[] = $alfa;
+                        }
+                    }
+
+                    if (count($notIssetFilePilgan) > 0) {
+                        echo json_encode([
+                            'status' => 'error',
+                            'message' => 'Gambar pilihan ganda ' . implode(', ', $notIssetFilePilgan) . ' tidak boleh kosong!'
+                        ]);
+                        exit;
+                    }
+
+                    $errorsPilgan = [];
+                    $newGambarsPilgan = [];
+                    foreach ($issetFilePilgan as $alfa => $gambars) {
+                        // get file properties
+                        $fileTmp        = $gambars['tmp_name'];
+                        $fileType       = $gambars['type'];
+                        $fileSize       = $gambars['size'];
+                        $fileError      = $gambars['error'];
+                        $fileExt        = explode('.', $gambars['name']);
+                        $fileActualExt  = strtolower(end($fileExt));
+                        $fileAllowed    = ['jpg', 'jpeg', 'png'];
+                        if (in_array($fileActualExt, $fileAllowed)) {
+                            if ($fileError === 0) {
+                                if ($fileSize < 1000000) {
+                                    // create new name
+                                    $newFilename        = $id_soal . '_' . $alfa . '.' . $fileActualExt;
+                                    $fileDestination    = $gambar_new_destination . $newFilename;
+                                    $newGambarsPilgan[] = [
+                                        'nama_gambar'   => $newFilename,
+                                        'path_gambar'   => $fileTmp,
+                                        'destination'   => $fileDestination
+                                    ];
+                                } else {
+                                    $errorsPilgan[] = $gambars['name'] . ' Ukuran file terlalu besar! \n';
+                                }
+                            } else {
+                                $errorsPilgan[] = $gambars['name'] . ' Terjadi kesalahan saat mengunggah file! \n';
+                            }
+                        } else {
+                            $errorsPilgan[] = $gambars['name'] . ' Format file tidak didukung! Hanya JPG, JPEG, PNG! \n';
+                        }
+                    }
+
+                    // inv new gambars pilgan to data insert
+                    foreach ($newGambarsPilgan as $keyGambarPilgan => $gambarPilgan) {
+                        $dataInsert['jawaban_' . $alfaPilgan[$keyGambarPilgan]] = $gambarPilgan['nama_gambar'];
+                    }
+
+                    // check error
+                    if (count($errorsPilgan) > 0) {
+                        $errorsPilgan = implode('', $errorsPilgan);
+                        echo json_encode(['status' => 'error', 'message' => $errorsPilgan]);
+                        exit;
+                    }
+
+                    // check kunci jawaban
+                    if ($dataInsert['kunci_jawaban'] == '') {
+                        echo json_encode(['status' => 'error', 'message' => 'Kunci jawaban tidak boleh kosong!']);
+                        exit;
+                    }
+                    // END MANAGE GAMBAR PILIHAN GANDA
+
+                    // SAVE SOAL TO DATABASE
+                    $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
+                    if ($save) {
+                        foreach ($newGambars as $gambar) {
+                            move_uploaded_file($gambar['path_gambar'], $gambar['destination']);
+                        }
+                        foreach ($newGambarsPilgan as $gambar) {
+                            move_uploaded_file($gambar['path_gambar'], $gambar['destination']);
+                        }
+                        echo json_encode(['status' => 'success', 'message' => 'Soal berhasil disimpan!']);
+                    } else {
+                        echo json_encode(['status' => 'error', 'message' => 'Soal gagal disimpan!']);
+                    }
+                } else {
+                    echo json_encode(['status' => 'error', 'message' => 'Gambar soal tidak boleh kosong!']);
+                    exit;
+                }
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Gambar soal tidak boleh kosong!']);
+                exit;
             }
-        }
-
-        // check status save soal
-        if ($_POST['status'] == 'add') {
-            $save = $soalClass->saveSoal('soal', $dataSoal);
         } else {
-            $save = $soalClass->updateSoal('soal', $dataSoal, ['id_soal' => $_POST['id_soal']]);
-        }
+            if ($kategori_id != 2) {
+                foreach ($alfaPilgan as $alfa) {
+                    $dataInsert['jawaban_' . $alfa] = $dataReq['pilgan_' . $alfa . '_' . $id_soal] ?: NULL;
+                }
+                // check kunci jawaban
+                if ($dataInsert['kunci_jawaban'] == '') {
+                    echo json_encode(['status' => 'error', 'message' => 'Kunci jawaban tidak boleh kosong!']);
+                    exit;
+                }
 
-        if ($save) {
-            echo json_encode(['status' => 'success', 'message' => 'Soal berhasil disimpan!']);
-        } else {
-            echo json_encode(['status' => 'error', 'message' => 'Soal gagal disimpan!']);
+                // save soal to database
+                $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
+            } else {
+                $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
+            }
+
+            if ($save) {
+                echo json_encode(['status' => 'success', 'message' => 'Soal berhasil disimpan!']);
+            } else {
+                echo json_encode(['status' => 'error', 'message' => 'Soal gagal disimpan!']);
+            }
         }
     }
 
-    if ($_POST['action'] == 'deleteSoal') {
+    if ($_POST['action'] == 'deleteSoalNew') {
         $id_soal = $_POST['id_soal'];
         $detailSoal = $soalClass->getSoalById($id_soal);
 
         // check gambar
-        if ($detailSoal['file']) {
-            $gambar_new_destination = '../myfiles/soal/';
-            $nama_gambar = json_decode($detailSoal['file'], true);
-            foreach ($nama_gambar as $gambar) {
-                $fileDestination = $gambar_new_destination . $gambar;
-                if (file_exists($fileDestination)) {
-                    unlink($fileDestination);
-                }
-            }
+        $detDirectory = '../myfiles/soal/' . $id_soal . '/';
+        if (is_dir($detDirectory)) {
+            $soalClass->deleteDirectory($detDirectory);
         }
 
         $delete = $soalClass->deleteSoal('soal', ['id_soal' => $id_soal]);

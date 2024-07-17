@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 12 Jul 2024 pada 14.08
+-- Waktu pembuatan: 17 Jul 2024 pada 13.39
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -133,7 +133,7 @@ CREATE TABLE `menu` (
 --
 
 INSERT INTO `menu` (`id_menu`, `nama_menu`, `direktori`, `icon`) VALUES
-(1, 'soal', 'soal', 'ri-presentation-fill'),
+(1, 'soal', 'new_soal', 'ri-presentation-fill'),
 (2, 'laporan', 'laporan', 'ri-git-repository-fill'),
 (3, 'data user', 'data_user', 'ri-team-fill'),
 (4, 'setting', 'setting', 'ri-list-settings-line');
@@ -208,6 +208,17 @@ CREATE TABLE `soal` (
   `kategori_id` int(11) DEFAULT NULL,
   `kunci_jawaban` varchar(1) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `soal`
+--
+
+INSERT INTO `soal` (`id_soal`, `no_soal`, `soal`, `jawaban_a`, `jawaban_b`, `jawaban_c`, `jawaban_d`, `file`, `kategori_id`, `kunci_jawaban`) VALUES
+(20, '20240716083143', '1, 4, 9, 16, 25, ... ?', '30', '35', '36', '40', NULL, 3, 'c'),
+(22, '20240716104338', 'Anjing : Gonggong = Kucing : __?', 'Meong', 'Mengaum', 'Mengeong', 'Menggeram', NULL, 3, 'c'),
+(23, '20240716104433', '2, 4, 6, 8, __?', NULL, NULL, NULL, NULL, NULL, 2, NULL),
+(24, '20240716112142', 'test 123', '24_a.png', '24_b.png', '24_c.png', '24_d.jpg', '[\"24_66963d869c0c72.39371533.png\",\"24_66963d869c1054.46932831.png\",\"24_66963d869c1070.24460206.png\",\"24_66963d869c1094.96193912.png\"]', 1, 'a'),
+(25, '20240716113030', 'Jika 5x + 3 = 23, maka berapakah nilai x?', '4', '5', '6', '7', NULL, 3, 'a');
 
 -- --------------------------------------------------------
 
@@ -349,7 +360,7 @@ ALTER TABLE `bank_soal`
 -- AUTO_INCREMENT untuk tabel `hak_akses`
 --
 ALTER TABLE `hak_akses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `jawaban`
@@ -373,7 +384,7 @@ ALTER TABLE `laporan`
 -- AUTO_INCREMENT untuk tabel `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengerjaan`
@@ -397,7 +408,7 @@ ALTER TABLE `setting`
 -- AUTO_INCREMENT untuk tabel `soal`
 --
 ALTER TABLE `soal`
-  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT untuk tabel `submenu`
