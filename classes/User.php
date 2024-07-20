@@ -19,7 +19,7 @@ class User
     public function insertUser($table, $data)
     {
         $db = DB::getInstance();
-        $res = $db->insert($table, $data);
+        $res = $db->add($table, $data);
         return $res;
     }
 

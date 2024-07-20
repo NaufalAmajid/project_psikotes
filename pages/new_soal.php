@@ -80,58 +80,53 @@ $soalClass = new Soal();
                                             </div>
                                         <?php endif; ?>
                                     <?php endif; ?>
-                                    <?php
-                                    $kategoriSoalPilgan = [1, 3];
-                                    if (in_array($soal['kategori_id'], $kategoriSoalPilgan) || $soal['kategori_id'] == '') :
-                                    ?>
-                                        <div class="row mb-1" id="pilihan-ganda-<?= $soal['id_soal'] ?>">
-                                            <div class="col-12">
-                                                <div class="row mb-2">
-                                                    <?php
-                                                    $pilgan = $soalClass->getPilgan();
-                                                    $alfaPilgan = [];
-                                                    foreach ($pilgan as $pil) :
-                                                        $getLast = explode('_', $pil['COLUMN_NAME']);
-                                                        $alfaPilgan[] = $getLast[1];
-                                                    ?>
-                                                        <div class="col-6">
-                                                            <label for="pilgan_<?= $getLast[1] ?>" class="col-form-label col-form-label-sm"><?= strtoupper($getLast[1]) ?></label>
-                                                            <?php if ($soal['kategori_id'] == 3 || $soal['kategori_id'] == '') : ?>
-                                                                <div class="input-for-pilgan-<?= $soal['id_soal'] ?>">
-                                                                    <input type="text" class="form-control form-control-sm" name="pilgan_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" id="pilgan_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" placeholder="..." value="<?= $soal[$pil['COLUMN_NAME']] ?>">
-                                                                </div>
-                                                            <?php endif; ?>
-                                                            <?php if ($soal['kategori_id'] == 1 || $soal['kategori_id'] == '') : ?>
-                                                                <div class="file-for-pilgan-<?= $soal['id_soal'] ?> <?= is_null($soal['kategori_id']) ? 'd-none' : '' ?>">
-                                                                    <?php if (is_null($soal['kategori_id'])) : ?>
-                                                                        <img src="assets/images/file-placeholder.png" onclick="triggerClick(this, '<?= $getLast[1] ?>', '<?= $soal['id_soal'] ?>')" alt="image-placeholder" id="image-placeholder-<?= $getLast[1] ?>-<?= $soal['id_soal'] ?>" class="img-thumbnail mb-1 ms-1" width="50" height="50">
-                                                                        <input type="file" class="form-control form-control-sm d-none input-file-pilgan-<?= $soal['id_soal'] ?>" onchange="displayImage(this, '<?= $getLast[1] ?>', '<?= $soal['id_soal'] ?>')" name="pilgan_file_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" id="pilgan_file_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>">
-                                                                    <?php else : ?>
-                                                                        <img src="myfiles/soal/<?= $soal['id_soal'] ?>/<?= $soal[$pil['COLUMN_NAME']] ?>" class="img-thumbnail mb-1 ms-1" width="100" height="100">
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            <?php endif; ?>
-                                                        </div>
-                                                    <?php endforeach; ?>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row mb-1" id="pilgan-kunci-<?= $soal['id_soal'] ?>">
-                                            <div class="col-12">
-                                                <div class="row mb-2">
-                                                    <label for="kunci-<?= $soal['id_soal'] ?>" class="col-4 col-form-label col-form-label-sm">Kunci Jawaban</label>
-                                                    <div class="col-8">
-                                                        <select name="kunci-<?= $soal['id_soal'] ?>" id="kunci-<?= $soal['id_soal'] ?>" class="form-select form-select-sm">
-                                                            <option value="">Kunci Jawaban</option>
-                                                            <?php foreach ($alfaPilgan as $alfa) : ?>
-                                                                <option value="<?= $alfa ?>" <?= $soal['kunci_jawaban'] == $alfa ? 'selected' : '' ?>><?= strtoupper($alfa) ?></option>
-                                                            <?php endforeach; ?>
-                                                        </select>
+                                    <div class="row mb-1" id="pilihan-ganda-<?= $soal['id_soal'] ?>">
+                                        <div class="col-12">
+                                            <div class="row mb-2">
+                                                <?php
+                                                $pilgan = $soalClass->getPilgan();
+                                                $alfaPilgan = [];
+                                                foreach ($pilgan as $pil) :
+                                                    $getLast = explode('_', $pil['COLUMN_NAME']);
+                                                    $alfaPilgan[] = $getLast[1];
+                                                ?>
+                                                    <div class="col-6">
+                                                        <label for="pilgan_<?= $getLast[1] ?>" class="col-form-label col-form-label-sm"><?= strtoupper($getLast[1]) ?></label>
+                                                        <?php if ($soal['kategori_id'] != 1 || $soal['kategori_id'] == '') : ?>
+                                                            <div class="input-for-pilgan-<?= $soal['id_soal'] ?>">
+                                                                <input type="text" class="form-control form-control-sm" name="pilgan_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" id="pilgan_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" placeholder="..." value="<?= $soal[$pil['COLUMN_NAME']] ?>">
+                                                            </div>
+                                                        <?php endif; ?>
+                                                        <?php if ($soal['kategori_id'] == 1 || $soal['kategori_id'] == '') : ?>
+                                                            <div class="file-for-pilgan-<?= $soal['id_soal'] ?> <?= is_null($soal['kategori_id']) ? 'd-none' : '' ?>">
+                                                                <?php if (is_null($soal['kategori_id'])) : ?>
+                                                                    <img src="assets/images/file-placeholder.png" onclick="triggerClick(this, '<?= $getLast[1] ?>', '<?= $soal['id_soal'] ?>')" alt="image-placeholder" id="image-placeholder-<?= $getLast[1] ?>-<?= $soal['id_soal'] ?>" class="img-thumbnail mb-1 ms-1" width="50" height="50">
+                                                                    <input type="file" class="form-control form-control-sm d-none input-file-pilgan-<?= $soal['id_soal'] ?>" onchange="displayImage(this, '<?= $getLast[1] ?>', '<?= $soal['id_soal'] ?>')" name="pilgan_file_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>" id="pilgan_file_<?= $getLast[1] ?>_<?= $soal['id_soal'] ?>">
+                                                                <?php else : ?>
+                                                                    <img src="myfiles/soal/<?= $soal['id_soal'] ?>/<?= $soal[$pil['COLUMN_NAME']] ?>" class="img-thumbnail mb-1 ms-1" width="100" height="100">
+                                                                <?php endif; ?>
+                                                            </div>
+                                                        <?php endif; ?>
                                                     </div>
+                                                <?php endforeach; ?>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-1" id="pilgan-kunci-<?= $soal['id_soal'] ?>">
+                                        <div class="col-12">
+                                            <div class="row mb-2">
+                                                <label for="kunci-<?= $soal['id_soal'] ?>" class="col-4 col-form-label col-form-label-sm">Kunci Jawaban</label>
+                                                <div class="col-8">
+                                                    <select name="kunci-<?= $soal['id_soal'] ?>" id="kunci-<?= $soal['id_soal'] ?>" class="form-select form-select-sm">
+                                                        <option value="">Kunci Jawaban</option>
+                                                        <?php foreach ($alfaPilgan as $alfa) : ?>
+                                                            <option value="<?= $alfa ?>" <?= $soal['kunci_jawaban'] == $alfa ? 'selected' : '' ?>><?= strtoupper($alfa) ?></option>
+                                                        <?php endforeach; ?>
+                                                    </select>
                                                 </div>
                                             </div>
                                         </div>
-                                    <?php endif; ?>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -178,16 +173,16 @@ $soalClass = new Soal();
                 fileForPilgan[i].classList.remove('d-none');
             }
         } else {
-            if (val == 2) {
-                $(`#pilihan-ganda-${id_soal}`).addClass('d-none');
-                $(`#pilgan-kunci-${id_soal}`).addClass('d-none');
-            } else {
-                $(`#pilihan-ganda-${id_soal}`).removeClass('d-none');
-                $(`#pilgan-kunci-${id_soal}`).removeClass('d-none');
-                for (let i = 0; i < inputForPilgan.length; i++) {
-                    inputForPilgan[i].classList.remove('d-none');
-                    fileForPilgan[i].classList.add('d-none');
-                }
+            // if (val == 2) {
+            //     $(`#pilihan-ganda-${id_soal}`).addClass('d-none');
+            //     $(`#pilgan-kunci-${id_soal}`).addClass('d-none');
+            // } else {
+            // }
+            $(`#pilihan-ganda-${id_soal}`).removeClass('d-none');
+            $(`#pilgan-kunci-${id_soal}`).removeClass('d-none');
+            for (let i = 0; i < inputForPilgan.length; i++) {
+                inputForPilgan[i].classList.remove('d-none');
+                fileForPilgan[i].classList.add('d-none');
             }
             $(`#soal-gambar-${id_soal}`).addClass('d-none');
         }

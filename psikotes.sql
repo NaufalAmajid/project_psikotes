@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 17 Jul 2024 pada 13.39
+-- Waktu pembuatan: 20 Jul 2024 pada 09.03
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -73,8 +73,20 @@ CREATE TABLE `jawaban` (
   `id_jawaban` int(11) NOT NULL,
   `soal_id` int(11) DEFAULT NULL,
   `jawaban` text DEFAULT NULL,
-  `duser_id` int(11) DEFAULT NULL
+  `user_id` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `jawaban`
+--
+
+INSERT INTO `jawaban` (`id_jawaban`, `soal_id`, `jawaban`, `user_id`) VALUES
+(1, 20, 'c', 2),
+(2, 22, 'c', 2),
+(3, 24, 'b', 2),
+(4, 25, 'a', 2),
+(5, 26, 'b', 2),
+(6, 26, 'c', 1);
 
 -- --------------------------------------------------------
 
@@ -146,11 +158,23 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `direktori`, `icon`) VALUES
 
 CREATE TABLE `pengerjaan` (
   `id_pengerjaan` int(11) NOT NULL,
-  `bank_id` int(11) DEFAULT NULL,
-  `duser_id` int(11) DEFAULT NULL,
-  `waktu` time DEFAULT NULL,
-  `status_pengerjaan` int(11) DEFAULT NULL
+  `user_id` int(11) DEFAULT NULL,
+  `start_time` timestamp NULL DEFAULT current_timestamp(),
+  `waktu` int(11) DEFAULT NULL,
+  `end_time` timestamp NULL DEFAULT current_timestamp(),
+  `jumlah_soal` int(11) DEFAULT NULL,
+  `skor` int(11) DEFAULT NULL,
+  `detail_soal` text DEFAULT NULL,
+  `status_pengerjaan` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `pengerjaan`
+--
+
+INSERT INTO `pengerjaan` (`id_pengerjaan`, `user_id`, `start_time`, `waktu`, `end_time`, `jumlah_soal`, `skor`, `detail_soal`, `status_pengerjaan`) VALUES
+(1, 2, '2024-07-20 06:41:32', 15, '2024-07-20 06:42:13', 5, 40, '[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"b\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"b\",\"kunci\":\"b\"}]', 1),
+(2, 1, '2024-07-20 06:45:55', 15, '2024-07-20 06:51:59', 5, 0, '[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"c\",\"kunci\":\"b\"}]', 1);
 
 -- --------------------------------------------------------
 
@@ -216,9 +240,9 @@ CREATE TABLE `soal` (
 INSERT INTO `soal` (`id_soal`, `no_soal`, `soal`, `jawaban_a`, `jawaban_b`, `jawaban_c`, `jawaban_d`, `file`, `kategori_id`, `kunci_jawaban`) VALUES
 (20, '20240716083143', '1, 4, 9, 16, 25, ... ?', '30', '35', '36', '40', NULL, 3, 'c'),
 (22, '20240716104338', 'Anjing : Gonggong = Kucing : __?', 'Meong', 'Mengaum', 'Mengeong', 'Menggeram', NULL, 3, 'c'),
-(23, '20240716104433', '2, 4, 6, 8, __?', NULL, NULL, NULL, NULL, NULL, 2, NULL),
 (24, '20240716112142', 'test 123', '24_a.png', '24_b.png', '24_c.png', '24_d.jpg', '[\"24_66963d869c0c72.39371533.png\",\"24_66963d869c1054.46932831.png\",\"24_66963d869c1070.24460206.png\",\"24_66963d869c1094.96193912.png\"]', 1, 'a'),
-(25, '20240716113030', 'Jika 5x + 3 = 23, maka berapakah nilai x?', '4', '5', '6', '7', NULL, 3, 'a');
+(25, '20240716113030', 'Jika 5x + 3 = 23, maka berapakah nilai x?', '4', '5', '6', '7', NULL, 3, 'a'),
+(26, '20240719045134', 'Mobil : Jalan = Kapal : ...', 'Pelabuhan', 'Laut', 'Sungai', 'Danau', NULL, 2, 'b');
 
 -- --------------------------------------------------------
 
@@ -260,8 +284,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `email`, `username`, `password`, `nik`, `photo_profile`, `nama_lengkap`, `no_hp`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `role_id`, `is_active`) VALUES
-(1, 'izuku@gmail.com', 'izuku', '202cb962ac59075b964b07152d234b70', NULL, 'izukumidoriya_1.png', 'Izuku Midoriya', NULL, NULL, NULL, NULL, 1, 1),
-(2, 'hanta@gmail.com', 'hanta', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'hanta sero', NULL, NULL, NULL, NULL, 2, 1);
+(1, 'izuku@gmail.com', 'izuku', '202cb962ac59075b964b07152d234b70', '0866546456', 'izukumidoriya_1.png', 'Izuku Midoriya', '082243634601', 'Laki-laki', 'Solo', '2020-05-21', 1, 1),
+(2, 'hanta@gmail.com', 'hanta', '202cb962ac59075b964b07152d234b70', '0866546456', 'hantasero_2.jpg', 'Hanta Sero', '082243634601', 'Laki-laki', 'Solo', '2002-01-15', 2, 1),
+(3, 'naufalamajid@gmail.com', 'naufal', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'naufal', NULL, NULL, NULL, NULL, 1, 0);
 
 --
 -- Indexes for dumped tables
@@ -286,7 +311,7 @@ ALTER TABLE `hak_akses`
 --
 ALTER TABLE `jawaban`
   ADD PRIMARY KEY (`id_jawaban`),
-  ADD KEY `jawaban_user_FK` (`duser_id`),
+  ADD KEY `jawaban_user_FK` (`user_id`),
   ADD KEY `jawaban_soal_FK` (`soal_id`);
 
 --
@@ -366,7 +391,7 @@ ALTER TABLE `hak_akses`
 -- AUTO_INCREMENT untuk tabel `jawaban`
 --
 ALTER TABLE `jawaban`
-  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori_soal`
@@ -390,7 +415,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT untuk tabel `pengerjaan`
 --
 ALTER TABLE `pengerjaan`
-  MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `role`
@@ -408,7 +433,7 @@ ALTER TABLE `setting`
 -- AUTO_INCREMENT untuk tabel `soal`
 --
 ALTER TABLE `soal`
-  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
+  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
 
 --
 -- AUTO_INCREMENT untuk tabel `submenu`
@@ -420,7 +445,7 @@ ALTER TABLE `submenu`
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)
@@ -438,7 +463,7 @@ ALTER TABLE `hak_akses`
 --
 ALTER TABLE `jawaban`
   ADD CONSTRAINT `jawaban_soal_FK` FOREIGN KEY (`soal_id`) REFERENCES `soal` (`id_soal`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `jawaban_user_FK` FOREIGN KEY (`duser_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `jawaban_user_FK` FOREIGN KEY (`user_id`) REFERENCES `user` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Ketidakleluasaan untuk tabel `soal`

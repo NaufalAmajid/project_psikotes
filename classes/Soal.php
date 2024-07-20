@@ -198,6 +198,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             $getLast = explode('_', $pil['COLUMN_NAME']);
             $alfaPilgan[] = $getLast[1];
         }
+
+        // check kategori_id
+        if ($kategori_id == '') {
+            echo json_encode(['status' => 'error', 'message' => 'Kategori soal belum dipilih!']);
+            exit;
+        }
+
         if ($kategori_id == 1) {
             if (isset($_FILES)) {
                 if (isset($_FILES['gambar'])) {
@@ -351,21 +358,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 exit;
             }
         } else {
-            if ($kategori_id != 2) {
-                foreach ($alfaPilgan as $alfa) {
-                    $dataInsert['jawaban_' . $alfa] = $dataReq['pilgan_' . $alfa . '_' . $id_soal] ?: NULL;
-                }
-                // check kunci jawaban
-                if ($dataInsert['kunci_jawaban'] == '') {
-                    echo json_encode(['status' => 'error', 'message' => 'Kunci jawaban tidak boleh kosong!']);
-                    exit;
-                }
 
-                // save soal to database
-                $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
-            } else {
-                $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
+            foreach ($alfaPilgan as $alfa) {
+                $dataInsert['jawaban_' . $alfa] = $dataReq['pilgan_' . $alfa . '_' . $id_soal] ?: NULL;
             }
+            // check kunci jawaban
+            if ($dataInsert['kunci_jawaban'] == '') {
+                echo json_encode(['status' => 'error', 'message' => 'Kunci jawaban tidak boleh kosong!']);
+                exit;
+            }
+
+            // save soal to database
+            $save = $soalClass->updateSoal('soal', $dataInsert, ['id_soal' => $id_soal]);
 
             if ($save) {
                 echo json_encode(['status' => 'success', 'message' => 'Soal berhasil disimpan!']);
