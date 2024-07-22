@@ -132,14 +132,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     }
 
     if ($_POST['action'] == 'submitPengerjaan') {
-
+        sleep(3);
         // all data post
         $user_id = $_POST['user_id'];
         $skorPerSoal = $_POST['skor'];
         $dataSoal = $pengerjaan->soalAndJawabanByUserId($_POST['user_id']);
+        $dataPengerjaan = $pengerjaan->getPengerjaanByIdUser($_POST['user_id']);
         $totalSkor = 0;
         $jumlahSoal = count($dataSoal);
         $notAnswered = 0;
+        $passAnswered = 0;
+        $wrongAnswered = 0;
         $detailSoal = [];
 
         $pilgans = $pengerjaan->getPilgan();
@@ -154,6 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 $jawaban = $_POST['soal_' . $soal['id_soal']];
                 if ($jawaban == $soal['kunci_jawaban']) {
                     $totalSkor += $skorPerSoal;
+                    $passAnswered++;
+                } else {
+                    $wrongAnswered++;
                 }
             } else {
                 $notAnswered++;
@@ -172,16 +178,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             ];
         }
 
-        // if ($notAnswered > 0) {
-        //     echo json_encode(['status' => 'failed', 'message' => 'Masih ada soal yang belum dijawab']);
-        //     exit;
-        // }
-
         $dataInsert = [
-            'jumlah_soal' => $jumlahSoal,
             'end_time' => date('Y-m-d H:i:s'),
-            'skor' => $totalSkor,
-            'detail_soal' => json_encode($detailSoal),
             'status_pengerjaan' => 1
         ];
 
@@ -191,7 +189,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
         $res = $pengerjaan->updatePengerjaan('pengerjaan', $dataInsert, $where);
 
+        $dataInsertLaporan = [
+            'email' => $_SESSION['user']['email'],
+            'username' => $_SESSION['user']['username'],
+            'nik' => $_SESSION['user']['nik'],
+            'nama_lengkap' => $_SESSION['user']['nama_lengkap'],
+            'jenis_kelamin' => $_SESSION['user']['jenis_kelamin'],
+            'tempat_lahir' => $_SESSION['user']['tempat_lahir'],
+            'tanggal_lahir' => $_SESSION['user']['tanggal_lahir'],
+            'hasil' => json_encode([
+                'jumlah_soal' => $jumlahSoal,
+                'waktu_pengerjaan' => $dataPengerjaan['waktu'],
+                'start_time' => $dataPengerjaan['start_time'],
+                'end_time' => date('Y-m-d H:i:s'),
+                'skor_per_soal' => $skorPerSoal,
+                'not_answered' => $notAnswered,
+                'pass_answered' => $passAnswered,
+                'wrong_answered' => $wrongAnswered,
+                'total_skor' => $totalSkor,
+                'detail_soal' => $detailSoal,
+            ])
+        ];
+
         if ($res) {
+            $saveLaporan = $pengerjaan->addPengerjaan('laporan', $dataInsertLaporan);
+        } else {
+            $saveLaporan = false;
+        }
+
+        if ($saveLaporan) {
             echo json_encode(['status' => 'success', 'message' => 'Pengerjaan berhasil disimpan', 'skor' => $totalSkor]);
         } else {
             echo json_encode(['status' => 'failed', 'message' => 'Pengerjaan gagal disimpan']);

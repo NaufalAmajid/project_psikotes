@@ -10,7 +10,7 @@ $setting = new Setting();
 $setting = $setting->getSetting();
 ?>
 <?php if ($_SESSION['user']['id_role'] == 1) : ?>
-    <?php include 'content/dashboard-admin.php'; ?>
+    <?php include 'main-admin.php'; ?>
 <?php else : ?>
     <?php if (isset($_GET['pengerjaan'])) : ?>
         <?php include 'content/pengerjaan-soal.php'; ?>

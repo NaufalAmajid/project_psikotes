@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 20 Jul 2024 pada 09.03
+-- Waktu pembuatan: 22 Jul 2024 pada 09.48
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -83,10 +83,8 @@ CREATE TABLE `jawaban` (
 INSERT INTO `jawaban` (`id_jawaban`, `soal_id`, `jawaban`, `user_id`) VALUES
 (1, 20, 'c', 2),
 (2, 22, 'c', 2),
-(3, 24, 'b', 2),
-(4, 25, 'a', 2),
-(5, 26, 'b', 2),
-(6, 26, 'c', 1);
+(3, 25, 'a', 2),
+(4, 26, 'c', 2);
 
 -- --------------------------------------------------------
 
@@ -127,6 +125,13 @@ CREATE TABLE `laporan` (
   `created_at` datetime DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data untuk tabel `laporan`
+--
+
+INSERT INTO `laporan` (`id_laporan`, `email`, `username`, `nik`, `nama_lengkap`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `hasil`, `created_at`) VALUES
+(1, 'hanta@gmail.com', 'hanta', '0866546456', 'Hanta Sero', 'Laki-laki', 'Solo', '2002-01-15', '{\"jumlah_soal\":5,\"waktu_pengerjaan\":15,\"start_time\":\"2024-07-22 10:42:43\",\"end_time\":\"2024-07-22 10:56:47\",\"skor_per_soal\":\"10\",\"not_answered\":1,\"pass_answered\":3,\"wrong_answered\":1,\"total_skor\":30,\"detail_soal\":[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"c\",\"kunci\":\"b\"}]}', '2024-07-22 10:56:47');
+
 -- --------------------------------------------------------
 
 --
@@ -162,9 +167,6 @@ CREATE TABLE `pengerjaan` (
   `start_time` timestamp NULL DEFAULT current_timestamp(),
   `waktu` int(11) DEFAULT NULL,
   `end_time` timestamp NULL DEFAULT current_timestamp(),
-  `jumlah_soal` int(11) DEFAULT NULL,
-  `skor` int(11) DEFAULT NULL,
-  `detail_soal` text DEFAULT NULL,
   `status_pengerjaan` int(11) DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -172,9 +174,8 @@ CREATE TABLE `pengerjaan` (
 -- Dumping data untuk tabel `pengerjaan`
 --
 
-INSERT INTO `pengerjaan` (`id_pengerjaan`, `user_id`, `start_time`, `waktu`, `end_time`, `jumlah_soal`, `skor`, `detail_soal`, `status_pengerjaan`) VALUES
-(1, 2, '2024-07-20 06:41:32', 15, '2024-07-20 06:42:13', 5, 40, '[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"b\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"b\",\"kunci\":\"b\"}]', 1),
-(2, 1, '2024-07-20 06:45:55', 15, '2024-07-20 06:51:59', 5, 0, '[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"c\",\"kunci\":\"b\"}]', 1);
+INSERT INTO `pengerjaan` (`id_pengerjaan`, `user_id`, `start_time`, `waktu`, `end_time`, `status_pengerjaan`) VALUES
+(1, 2, '2024-07-22 03:42:43', 15, '2024-07-22 03:56:47', 1);
 
 -- --------------------------------------------------------
 
@@ -391,7 +392,7 @@ ALTER TABLE `hak_akses`
 -- AUTO_INCREMENT untuk tabel `jawaban`
 --
 ALTER TABLE `jawaban`
-  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori_soal`
@@ -403,7 +404,7 @@ ALTER TABLE `kategori_soal`
 -- AUTO_INCREMENT untuk tabel `laporan`
 --
 ALTER TABLE `laporan`
-  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id_laporan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `menu`
@@ -415,7 +416,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT untuk tabel `pengerjaan`
 --
 ALTER TABLE `pengerjaan`
-  MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT untuk tabel `role`

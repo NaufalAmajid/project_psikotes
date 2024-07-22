@@ -24,7 +24,7 @@ $func = new Functions();
     <meta content="Techzaa" name="author" />
 
     <!-- App favicon -->
-    <link rel="shortcut icon" href="assets/images/favicon.ico">
+    <link rel="shortcut icon" href="assets/images/my-logo.png">
 
     <!-- Daterangepicker css -->
     <link rel="stylesheet" href="assets/vendor/daterangepicker/daterangepicker.css">
@@ -66,22 +66,22 @@ $func = new Functions();
                     <!-- Topbar Brand Logo -->
                     <div class="logo-topbar">
                         <!-- Logo light -->
-                        <a href="index.html" class="logo-light">
+                        <a href="dashboard.php" class="logo-light">
                             <span class="logo-lg">
-                                <img src="assets/images/logo.png" alt="logo">
+                                <img src="assets/images/my-logo-dash.png" alt="logo">
                             </span>
                             <span class="logo-sm">
-                                <img src="assets/images/logo-sm.png" alt="small logo">
+                                <img src="assets/images/my-logo.png" alt="small logo">
                             </span>
                         </a>
 
                         <!-- Logo Dark -->
-                        <a href="index.html" class="logo-dark">
+                        <a href="dashboard.php" class="logo-dark">
                             <span class="logo-lg">
-                                <img src="assets/images/logo-dark.png" alt="dark logo">
+                                <img src="assets/images/my-logo-dash.png" alt="dark logo">
                             </span>
                             <span class="logo-sm">
-                                <img src="assets/images/logo-sm.png" alt="small logo">
+                                <img src="assets/images/my-logo.png" alt="small logo">
                             </span>
                         </a>
                     </div>
@@ -143,22 +143,22 @@ $func = new Functions();
         <div class="leftside-menu">
 
             <!-- Brand Logo Light -->
-            <a href="index.html" class="logo logo-light">
+            <a href="dashboard.php" class="logo logo-light">
                 <span class="logo-lg">
-                    <img src="assets/images/logo.png" alt="logo">
+                    <img src="assets/images/my-logo-dash.png" alt="logo">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="small logo">
+                    <img src="assets/images/my-logo.png" alt="small logo">
                 </span>
             </a>
 
             <!-- Brand Logo Dark -->
-            <a href="index.html" class="logo logo-dark">
+            <a href="dashboard.php" class="logo logo-dark">
                 <span class="logo-lg">
-                    <img src="assets/images/logo-dark.png" alt="dark logo">
+                    <img src="assets/images/my-logo-dash.png" alt="dark logo">
                 </span>
                 <span class="logo-sm">
-                    <img src="assets/images/logo-sm.png" alt="small logo">
+                    <img src="assets/images/my-logo.png" alt="small logo">
                 </span>
             </a>
 

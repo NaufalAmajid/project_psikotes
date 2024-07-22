@@ -272,6 +272,17 @@ $lastSoalId = $soalAndJawaban[count($soalAndJawaban) - 1]['id_soal'];
             data: formData,
             contentType: false,
             processData: false,
+            beforeSend: function() {
+                Swal.fire({
+                    icon: 'info',
+                    title: 'Menyimpan Jawaban',
+                    showConfirmButton: false,
+                    allowOutsideClick: false,
+                    didOpen: () => {
+                        Swal.showLoading();
+                    }
+                });
+            },
             success: function(data) {
                 let response = JSON.parse(data);
                 Swal.fire({
