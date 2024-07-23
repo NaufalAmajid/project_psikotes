@@ -53,7 +53,15 @@ $settingData = $setting->getSetting();
             type: 'POST',
             data: send,
             success: function(response) {
-                console.log(response);
+                let data = JSON.parse(response);
+                Swal.fire({
+                    icon: data.status,
+                    title: data.message,
+                    showConfirmButton: false,
+                    timer: 1500
+                }).then(() => {
+                    location.reload();
+                });
             }
         });
     }

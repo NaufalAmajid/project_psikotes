@@ -18,42 +18,44 @@ $laporanAll = $laporan->getLaporan();
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <table id="table-laporan" class="table table-striped dt-responsive nowrap w-100">
-                    <thead>
-                        <tr>
-                            <th>No</th>
-                            <th>Nama</th>
-                            <th>Email</th>
-                            <th>NIK</th>
-                            <th>Tempat, Tanggal Lahir</th>
-                            <th>Jenis Kelamin</th>
-                            <th>Hasil</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php $no = 1; ?>
-                        <?php foreach ($laporanAll as $lap) : ?>
+                <div class="table-responsive">
+                    <table id="table-laporan" class="table table-striped dt-responsive nowrap w-100">
+                        <thead>
                             <tr>
-                                <td><?= $no++ ?></td>
-                                <td><?= $lap['nama_lengkap'] ?></td>
-                                <td><?= $lap['email'] ?></td>
-                                <td><?= $lap['nik'] ?></td>
-                                <td><?= $lap['tempat_lahir'] . ', ' . $lap['tanggal_lahir'] ?></td>
-                                <td><?= $lap['jenis_kelamin'] ?></td>
-                                <td>
-                                    <?php
-                                    $result = json_decode($lap['hasil'], true);
-                                    ?>
-                                    Jumlah Soal : <?= $result['jumlah_soal'] ?><br>
-                                    <span class="badge bg-primary-subtle text-primary rounded-pill">Betul</span> : <?= $result['pass_answered'] ?><br>
-                                    <span class="badge bg-danger-subtle text-danger rounded-pill">Salah</span> : <?= $result['wrong_answered'] ?><br>
-                                    <span class="badge bg-warning-subtle text-warning rounded-pill">Tidak Dijawab</span> : <?= $result['not_answered'] ?><br>
-                                    Total Skor : <?= $result['total_skor'] ?>
-                                </td>
+                                <th>No</th>
+                                <th>Nama</th>
+                                <th>Email</th>
+                                <th>NIK</th>
+                                <th>Tempat, Tanggal Lahir</th>
+                                <th>Jenis Kelamin</th>
+                                <th>Hasil</th>
                             </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            <?php $no = 1; ?>
+                            <?php foreach ($laporanAll as $lap) : ?>
+                                <tr>
+                                    <td><?= $no++ ?></td>
+                                    <td><?= $lap['nama_lengkap'] ?></td>
+                                    <td><?= $lap['email'] ?></td>
+                                    <td><?= $lap['nik'] ?></td>
+                                    <td><?= $lap['tempat_lahir'] . ', ' . $lap['tanggal_lahir'] ?></td>
+                                    <td><?= $lap['jenis_kelamin'] ?></td>
+                                    <td>
+                                        <?php
+                                        $result = json_decode($lap['hasil'], true);
+                                        ?>
+                                        Jumlah Soal : <?= $result['jumlah_soal'] ?><br>
+                                        <span class="badge bg-primary-subtle text-primary rounded-pill">Betul</span> : <?= $result['pass_answered'] ?><br>
+                                        <span class="badge bg-danger-subtle text-danger rounded-pill">Salah</span> : <?= $result['wrong_answered'] ?><br>
+                                        <span class="badge bg-warning-subtle text-warning rounded-pill">Tidak Dijawab</span> : <?= $result['not_answered'] ?><br>
+                                        Total Skor : <?= $result['total_skor'] ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
