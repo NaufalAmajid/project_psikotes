@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 22 Jul 2024 pada 09.48
+-- Waktu pembuatan: 31 Jul 2024 pada 08.51
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -61,7 +61,8 @@ INSERT INTO `hak_akses` (`id`, `role_id`, `menu_id`) VALUES
 (1, 1, 1),
 (2, 1, 2),
 (3, 1, 3),
-(4, 1, 4);
+(4, 1, 4),
+(6, 1, 6);
 
 -- --------------------------------------------------------
 
@@ -153,7 +154,8 @@ INSERT INTO `menu` (`id_menu`, `nama_menu`, `direktori`, `icon`) VALUES
 (1, 'soal', 'new_soal', 'ri-presentation-fill'),
 (2, 'laporan', 'laporan', 'ri-git-repository-fill'),
 (3, 'data user', 'data_user', 'ri-team-fill'),
-(4, 'setting', 'setting', 'ri-list-settings-line');
+(4, 'setting', 'setting', 'ri-list-settings-line'),
+(6, 'penjadwalan', 'penjadwalan', 'ri-calendar-todo-fill');
 
 -- --------------------------------------------------------
 
@@ -176,6 +178,27 @@ CREATE TABLE `pengerjaan` (
 
 INSERT INTO `pengerjaan` (`id_pengerjaan`, `user_id`, `start_time`, `waktu`, `end_time`, `status_pengerjaan`) VALUES
 (1, 2, '2024-07-22 03:42:43', 15, '2024-07-22 03:56:47', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Struktur dari tabel `penjadwalan`
+--
+
+CREATE TABLE `penjadwalan` (
+  `id_penjadwalan` int(11) NOT NULL,
+  `no_jadwal` varchar(100) DEFAULT NULL,
+  `tanggal` datetime DEFAULT NULL,
+  `peserta` text DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data untuk tabel `penjadwalan`
+--
+
+INSERT INTO `penjadwalan` (`id_penjadwalan`, `no_jadwal`, `tanggal`, `peserta`) VALUES
+(1, '20240731082600998', '2024-08-03 08:25:00', '2'),
+(2, '20240731082600998', '2024-08-03 08:25:00', '4');
 
 -- --------------------------------------------------------
 
@@ -287,7 +310,8 @@ CREATE TABLE `user` (
 INSERT INTO `user` (`id_user`, `email`, `username`, `password`, `nik`, `photo_profile`, `nama_lengkap`, `no_hp`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `role_id`, `is_active`) VALUES
 (1, 'izuku@gmail.com', 'izuku', '202cb962ac59075b964b07152d234b70', '0866546456', 'izukumidoriya_1.png', 'Izuku Midoriya', '082243634601', 'Laki-laki', 'Solo', '2020-05-21', 1, 1),
 (2, 'hanta@gmail.com', 'hanta', '202cb962ac59075b964b07152d234b70', '0866546456', 'hantasero_2.jpg', 'Hanta Sero', '082243634601', 'Laki-laki', 'Solo', '2002-01-15', 2, 1),
-(3, 'naufalamajid@gmail.com', 'naufal', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'naufal', NULL, NULL, NULL, NULL, 1, 0);
+(3, 'naufalamajid@gmail.com', 'naufal', '202cb962ac59075b964b07152d234b70', NULL, NULL, 'naufal', NULL, NULL, NULL, NULL, 1, 0),
+(4, 'bakugo@gmail.com', 'bakugo', '202cb962ac59075b964b07152d234b70', NULL, 'test.png', 'Katsuki Bakugo', NULL, NULL, NULL, NULL, 2, 1);
 
 --
 -- Indexes for dumped tables
@@ -340,6 +364,12 @@ ALTER TABLE `pengerjaan`
   ADD PRIMARY KEY (`id_pengerjaan`);
 
 --
+-- Indeks untuk tabel `penjadwalan`
+--
+ALTER TABLE `penjadwalan`
+  ADD UNIQUE KEY `penjadwalan_unique` (`id_penjadwalan`);
+
+--
 -- Indeks untuk tabel `role`
 --
 ALTER TABLE `role`
@@ -386,7 +416,7 @@ ALTER TABLE `bank_soal`
 -- AUTO_INCREMENT untuk tabel `hak_akses`
 --
 ALTER TABLE `hak_akses`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `jawaban`
@@ -410,13 +440,19 @@ ALTER TABLE `laporan`
 -- AUTO_INCREMENT untuk tabel `menu`
 --
 ALTER TABLE `menu`
-  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_menu` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT untuk tabel `pengerjaan`
 --
 ALTER TABLE `pengerjaan`
   MODIFY `id_pengerjaan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT untuk tabel `penjadwalan`
+--
+ALTER TABLE `penjadwalan`
+  MODIFY `id_penjadwalan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT untuk tabel `role`
@@ -446,7 +482,7 @@ ALTER TABLE `submenu`
 -- AUTO_INCREMENT untuk tabel `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Ketidakleluasaan untuk tabel pelimpahan (Dumped Tables)

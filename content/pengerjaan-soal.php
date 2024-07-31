@@ -241,12 +241,12 @@ $lastSoalId = $soalAndJawaban[count($soalAndJawaban) - 1]['id_soal'];
             },
             success: function(data) {
                 $('#paginate-soal-' + id_soal).removeClass('btn-secondary').addClass('btn-info');
-                // setTimeout(() => {
-                //     if (nextSoalId != null || nextSoalId != undefined || nextSoalId != '') {
-                //         showSoal(nextSoalId);
-                //         $('#submit-pengerjaan').removeClass('d-none');
-                //     }
-                // }, 500);
+                setTimeout(() => {
+                    if (nextSoalId != null || nextSoalId != undefined || nextSoalId != '') {
+                        showSoal(nextSoalId);
+                        $('#submit-pengerjaan').removeClass('d-none');
+                    }
+                }, 500);
                 if (nextSoalId == id_soal) {
                     $('#submit-pengerjaan').removeClass('d-none');
                 }
