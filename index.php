@@ -120,9 +120,10 @@ if (isset($_SESSION['is_login'])) {
                         let res = JSON.parse(response);
                         Swal.fire({
                             icon: res.status,
-                            title: res.message,
+                            title: res.status.charAt(0).toUpperCase() + res.status.slice(1),
+                            html: res.message,
                             showConfirmButton: false,
-                            timer: 1500
+                            timer: res.timer ? res.timer : 2000
                         }).then(() => {
                             if (res.status == "success") {
                                 window.location.href = "dashboard.php";

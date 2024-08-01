@@ -21,14 +21,14 @@ $settingData = $setting->getSetting();
             <div class="card-body">
                 <form id="form-setting">
                     <div class="row g-2">
-                        <div class="mb-3 col-md-6">
+                        <div class="mb-3 col-md-4">
                             <label for="waktu_pengerjaan" class="form-label">Waktu Pengerjaan</label>
                             <input type="number" class="form-control" id="waktu_pengerjaan" name="waktu_pengerjaan" placeholder="waktu pengerjaan ..." value="<?= $settingData['waktu_pengerjaan'] ?>">
                             <small class="form-text text-muted">Waktu pengerjaan dalam menit</small>
                         </div>
-                        <div class="mb-3 col-md-6">
-                            <label for="skor_soal" class="form-label">Skor Per Soal</label>
-                            <input type="number" class="form-control" id="skor_soal" name="skor_soal" placeholder="skor per soal ..." value="<?= $settingData['skor_soal'] ?>">
+                        <div class="mb-3 col-md-8">
+                            <label for="penilaian" class="form-label">Penilaian</label>
+                            <input type="text" class="form-control" id="penilaian" name="penilaian" placeholder="penilaian ..." value="<?= $settingData['penilaian'] ?>">
                         </div>
                     </div>
                     <button type="button" class="btn btn-primary" onclick="saveSetting()">Simpan Perubahan</button>

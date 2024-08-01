@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Waktu pembuatan: 31 Jul 2024 pada 08.51
+-- Waktu pembuatan: 01 Agu 2024 pada 05.53
 -- Versi server: 10.4.32-MariaDB
 -- Versi PHP: 8.2.12
 
@@ -84,8 +84,11 @@ CREATE TABLE `jawaban` (
 INSERT INTO `jawaban` (`id_jawaban`, `soal_id`, `jawaban`, `user_id`) VALUES
 (1, 20, 'c', 2),
 (2, 22, 'c', 2),
-(3, 25, 'a', 2),
-(4, 26, 'c', 2);
+(3, 24, 'a', 2),
+(4, 25, 'a', 2),
+(5, 26, 'b', 2),
+(6, 27, 'd', 2),
+(7, 28, 'c', 2);
 
 -- --------------------------------------------------------
 
@@ -131,7 +134,7 @@ CREATE TABLE `laporan` (
 --
 
 INSERT INTO `laporan` (`id_laporan`, `email`, `username`, `nik`, `nama_lengkap`, `jenis_kelamin`, `tempat_lahir`, `tanggal_lahir`, `hasil`, `created_at`) VALUES
-(1, 'hanta@gmail.com', 'hanta', '0866546456', 'Hanta Sero', 'Laki-laki', 'Solo', '2002-01-15', '{\"jumlah_soal\":5,\"waktu_pengerjaan\":15,\"start_time\":\"2024-07-22 10:42:43\",\"end_time\":\"2024-07-22 10:56:47\",\"skor_per_soal\":\"10\",\"not_answered\":1,\"pass_answered\":3,\"wrong_answered\":1,\"total_skor\":30,\"detail_soal\":[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"Belum dijawab\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"c\",\"kunci\":\"b\"}]}', '2024-07-22 10:56:47');
+(1, 'hanta@gmail.com', 'hanta', '0866546456', 'Hanta Sero', 'Laki-laki', 'Solo', '2002-01-15', '{\"jumlah_soal\":7,\"waktu_pengerjaan\":15,\"start_time\":\"2024-08-01 09:27:55\",\"end_time\":\"2024-08-01 09:28:18\",\"penilaian\":\"(100\\/<jumlah_soal>)*<jumlah_benar>\",\"not_answered\":0,\"pass_answered\":7,\"wrong_answered\":0,\"total_skor\":100,\"detail_soal\":[{\"soal\":\"1, 4, 9, 16, 25, ... ?\",\"pilgan\":{\"a\":\"30\",\"b\":\"35\",\"c\":\"36\",\"d\":\"40\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"Anjing : Gonggong = Kucing : __?\",\"pilgan\":{\"a\":\"Meong\",\"b\":\"Mengaum\",\"c\":\"Mengeong\",\"d\":\"Menggeram\"},\"jawab\":\"c\",\"kunci\":\"c\"},{\"soal\":\"test 123\",\"pilgan\":{\"a\":\"24_a.png\",\"b\":\"24_b.png\",\"c\":\"24_c.png\",\"d\":\"24_d.jpg\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Jika 5x + 3 = 23, maka berapakah nilai x?\",\"pilgan\":{\"a\":\"4\",\"b\":\"5\",\"c\":\"6\",\"d\":\"7\"},\"jawab\":\"a\",\"kunci\":\"a\"},{\"soal\":\"Mobil : Jalan = Kapal : ...\",\"pilgan\":{\"a\":\"Pelabuhan\",\"b\":\"Laut\",\"c\":\"Sungai\",\"d\":\"Danau\"},\"jawab\":\"b\",\"kunci\":\"b\"},{\"soal\":\"4 + 5\",\"pilgan\":{\"a\":\"2\",\"b\":\"4\",\"c\":\"6\",\"d\":\"9\"},\"jawab\":\"d\",\"kunci\":\"d\"},{\"soal\":\"L + 2 = \",\"pilgan\":{\"a\":\"3\",\"b\":\"5\",\"c\":\"19\",\"d\":\"8\"},\"jawab\":\"c\",\"kunci\":\"c\"}]}', '2024-08-01 09:28:18');
 
 -- --------------------------------------------------------
 
@@ -177,7 +180,7 @@ CREATE TABLE `pengerjaan` (
 --
 
 INSERT INTO `pengerjaan` (`id_pengerjaan`, `user_id`, `start_time`, `waktu`, `end_time`, `status_pengerjaan`) VALUES
-(1, 2, '2024-07-22 03:42:43', 15, '2024-07-22 03:56:47', 1);
+(1, 2, '2024-08-01 02:27:55', 15, '2024-08-01 02:28:18', 1);
 
 -- --------------------------------------------------------
 
@@ -191,14 +194,6 @@ CREATE TABLE `penjadwalan` (
   `tanggal` datetime DEFAULT NULL,
   `peserta` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data untuk tabel `penjadwalan`
---
-
-INSERT INTO `penjadwalan` (`id_penjadwalan`, `no_jadwal`, `tanggal`, `peserta`) VALUES
-(1, '20240731082600998', '2024-08-03 08:25:00', '2'),
-(2, '20240731082600998', '2024-08-03 08:25:00', '4');
 
 -- --------------------------------------------------------
 
@@ -228,15 +223,15 @@ INSERT INTO `role` (`id_role`, `nama_role`) VALUES
 CREATE TABLE `setting` (
   `id` int(11) NOT NULL,
   `waktu_pengerjaan` int(11) DEFAULT NULL,
-  `skor_soal` int(11) DEFAULT NULL
+  `penilaian` text DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data untuk tabel `setting`
 --
 
-INSERT INTO `setting` (`id`, `waktu_pengerjaan`, `skor_soal`) VALUES
-(1, 15, 10);
+INSERT INTO `setting` (`id`, `waktu_pengerjaan`, `penilaian`) VALUES
+(1, 15, '(100/<jumlah_soal>)*<jumlah_benar>');
 
 -- --------------------------------------------------------
 
@@ -266,7 +261,9 @@ INSERT INTO `soal` (`id_soal`, `no_soal`, `soal`, `jawaban_a`, `jawaban_b`, `jaw
 (22, '20240716104338', 'Anjing : Gonggong = Kucing : __?', 'Meong', 'Mengaum', 'Mengeong', 'Menggeram', NULL, 3, 'c'),
 (24, '20240716112142', 'test 123', '24_a.png', '24_b.png', '24_c.png', '24_d.jpg', '[\"24_66963d869c0c72.39371533.png\",\"24_66963d869c1054.46932831.png\",\"24_66963d869c1070.24460206.png\",\"24_66963d869c1094.96193912.png\"]', 1, 'a'),
 (25, '20240716113030', 'Jika 5x + 3 = 23, maka berapakah nilai x?', '4', '5', '6', '7', NULL, 3, 'a'),
-(26, '20240719045134', 'Mobil : Jalan = Kapal : ...', 'Pelabuhan', 'Laut', 'Sungai', 'Danau', NULL, 2, 'b');
+(26, '20240719045134', 'Mobil : Jalan = Kapal : ...', 'Pelabuhan', 'Laut', 'Sungai', 'Danau', NULL, 2, 'b'),
+(27, '20240801041427', '4 + 5', '2', '4', '6', '9', NULL, 3, 'd'),
+(28, '20240801041451', 'L + 2 = ', '3', '5', '19', '8', NULL, 3, 'c');
 
 -- --------------------------------------------------------
 
@@ -422,7 +419,7 @@ ALTER TABLE `hak_akses`
 -- AUTO_INCREMENT untuk tabel `jawaban`
 --
 ALTER TABLE `jawaban`
-  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_jawaban` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT untuk tabel `kategori_soal`
@@ -452,7 +449,7 @@ ALTER TABLE `pengerjaan`
 -- AUTO_INCREMENT untuk tabel `penjadwalan`
 --
 ALTER TABLE `penjadwalan`
-  MODIFY `id_penjadwalan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id_penjadwalan` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT untuk tabel `role`
@@ -470,7 +467,7 @@ ALTER TABLE `setting`
 -- AUTO_INCREMENT untuk tabel `soal`
 --
 ALTER TABLE `soal`
-  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id_soal` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT untuk tabel `submenu`

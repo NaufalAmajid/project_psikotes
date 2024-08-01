@@ -19,7 +19,17 @@ class Authentication
     public function getAllUser($where = null)
     {
         $where = $where ? "WHERE $where" : '';
-        $query = "SELECT * FROM user JOIN role ON user.role_id = role.id_role $where";
+        $query = "select
+                        date_format(pjdl.tanggal, '%Y-%m-%d') as tanggal_jadwal,
+                        role.*,
+	                    user.*
+                    from
+                        user
+                    join role on
+                        user.role_id = role.id_role
+                    left join penjadwalan pjdl on
+                        user.id_user = pjdl.peserta
+                        $where";
         $result = $this->conn->query($query);
         $result->execute();
 
@@ -30,9 +40,11 @@ class Authentication
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     session_start();
     require_once '../config/connection.php';
+    require_once '../config/functions.php';
     require_once '../classes/DB.php';
 
     $auth = new Authentication();
+    $funt = new Functions();
 
     if ($_POST['action'] == 'register') {
         $username       = $_POST['username'];
@@ -78,23 +90,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
         $checkUser = $auth->getAllUser("email = '$emailusername' OR username = '$emailusername' AND is_active = 1");
         if (count($checkUser) > 0) {
+
+            // check role dan jadwal
+            if ($checkUser[0]['role_id'] == 2) {
+                if (is_null($checkUser[0]['tanggal_jadwal'])) {
+                    $res = [
+                        'status' => 'error',
+                        'message' => 'Anda Belum Dijadwalkan!',
+                        'timer'   => 2000
+                    ];
+                    echo json_encode($res);
+                    exit;
+                } else if ($checkUser[0]['tanggal_jadwal'] != date('Y-m-d')) {
+                    $res = [
+                        'status' => 'error',
+                        'message' => 'Jadwal Anda Pada Tanggal ' . $funt->dateIndonesia($checkUser[0]['tanggal_jadwal']) . '!',
+                        'timer'   => 3000
+                    ];
+                    echo json_encode($res);
+                    exit;
+                }
+            }
+
             if ($checkUser[0]['password'] == $password) {
                 $_SESSION['user'] = $checkUser[0];
                 $_SESSION['is_login'] = true;
                 $res = [
                     'status' => 'success',
-                    'message' => 'Login Berhasil!'
+                    'message' => 'Login Berhasil!',
+                    'timer'   => 1500
                 ];
             } else {
                 $res = [
                     'status' => 'error',
-                    'message' => 'Password Salah!'
+                    'message' => 'Password Salah!',
+                    'timer'   => 1500
                 ];
             }
         } else {
             $res = [
                 'status' => 'error',
-                'message' => 'Username atau Email tidak ditemukan!'
+                'message' => 'Username atau Email tidak ditemukan!',
+                'timer'   => 1500
             ];
         }
 

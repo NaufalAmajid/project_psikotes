@@ -135,7 +135,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         sleep(3);
         // all data post
         $user_id = $_POST['user_id'];
-        $skorPerSoal = $_POST['skor'];
+        $penilaian = $_POST['penilaian'];
         $dataSoal = $pengerjaan->soalAndJawabanByUserId($_POST['user_id']);
         $dataPengerjaan = $pengerjaan->getPengerjaanByIdUser($_POST['user_id']);
         $totalSkor = 0;
@@ -156,7 +156,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
             if (isset($_POST['soal_' . $soal['id_soal']])) {
                 $jawaban = $_POST['soal_' . $soal['id_soal']];
                 if ($jawaban == $soal['kunci_jawaban']) {
-                    $totalSkor += $skorPerSoal;
                     $passAnswered++;
                 } else {
                     $wrongAnswered++;
@@ -189,6 +188,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
 
         $res = $pengerjaan->updatePengerjaan('pengerjaan', $dataInsert, $where);
 
+        // count skor
+        $rumus = str_replace(['<jumlah_soal>', '<jumlah_benar>'], [$jumlahSoal, $passAnswered], $penilaian);
+        eval('$totalSkor = ' . $rumus . ';');
+        $totalSkor = round($totalSkor, 1);
+
         $dataInsertLaporan = [
             'email' => $_SESSION['user']['email'],
             'username' => $_SESSION['user']['username'],
@@ -202,7 +206,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
                 'waktu_pengerjaan' => $dataPengerjaan['waktu'],
                 'start_time' => $dataPengerjaan['start_time'],
                 'end_time' => date('Y-m-d H:i:s'),
-                'skor_per_soal' => $skorPerSoal,
+                'penilaian' => $penilaian,
                 'not_answered' => $notAnswered,
                 'pass_answered' => $passAnswered,
                 'wrong_answered' => $wrongAnswered,

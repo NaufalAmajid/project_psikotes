@@ -42,7 +42,7 @@ $lastSoalId = $soalAndJawaban[count($soalAndJawaban) - 1]['id_soal'];
     }
 </style>
 <input type="hidden" id="id_user" value="<?= $_SESSION['user']['id_user'] ?>">
-<input type="hidden" id="skor" value="<?= $setting['skor_soal'] ?>">
+<input type="hidden" id="penilaian" value="<?= $setting['penilaian'] ?>">
 <input type="hidden" id="waktu" value="<?= $checkPengerjaan ? $checkPengerjaan['waktu'] : $setting['waktu_pengerjaan'] ?>">
 <input type="hidden" id="start_time" value="<?= $checkPengerjaan ? strtotime($checkPengerjaan['start_time']) : 0 ?>">
 <input type="hidden" id="checkPengerjaan" value="<?= $checkPengerjaan ? $checkPengerjaan['status_pengerjaan'] : 99 ?>">
@@ -244,7 +244,6 @@ $lastSoalId = $soalAndJawaban[count($soalAndJawaban) - 1]['id_soal'];
                 setTimeout(() => {
                     if (nextSoalId != null || nextSoalId != undefined || nextSoalId != '') {
                         showSoal(nextSoalId);
-                        $('#submit-pengerjaan').removeClass('d-none');
                     }
                 }, 500);
                 if (nextSoalId == id_soal) {
@@ -262,9 +261,9 @@ $lastSoalId = $soalAndJawaban[count($soalAndJawaban) - 1]['id_soal'];
             formData.append(field.name, field.value);
         });
         let user_id = $('#id_user').val();
-        let skor = $('#skor').val();
+        let penilaian = $('#penilaian').val();
         formData.append('user_id', user_id);
-        formData.append('skor', skor);
+        formData.append('penilaian', penilaian);
         formData.append('action', 'submitPengerjaan');
         $.ajax({
             url: 'classes/Pengerjaan.php',

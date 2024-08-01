@@ -25,6 +25,13 @@ class Penjadwalan
         return $res;
     }
 
+    public function deletePenjadwalan($table, $where)
+    {
+        $db = DB::getInstance();
+        $res = $db->delete($table, $where);
+        return $res;
+    }
+
     public function getPenjadwalan()
     {
         $query = "select
@@ -140,5 +147,51 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $lastOutput = "Data berhasil disimpan: $success <br> Data gagal disimpan: $failed <br> $msgFailed";
 
         echo $lastOutput;
+    }
+
+    if ($_POST['action'] == 'editPenjadwalan') {
+        $getJadwalByNoJadwal = $penjadwalan->getJadwalByNoJadwal($_POST['no_jadwal']);
+        $listIdPeserta = $getJadwalByNoJadwal['id_peserta'];
+        $listPeserta = isset($_POST['peserta']) ? $_POST['peserta'] : [];
+
+        // update
+        foreach ($listIdPeserta as $idPeserta) {
+            if (!in_array($idPeserta, $listPeserta) || count($listPeserta) == 0) {
+                $where = ['no_jadwal' => $_POST['no_jadwal'], 'peserta' => $idPeserta];
+                $res = $penjadwalan->deletePenjadwalan('penjadwalan', $where);
+            } else {
+                $where = ['no_jadwal' => $_POST['no_jadwal']];
+                $data = ['tanggal' => $_POST['tanggal']];
+                $res = $penjadwalan->updatePenjadwalan('penjadwalan', $data, $where);
+            }
+        }
+
+        // insert
+        foreach ($listPeserta as $peserta) {
+            if (!in_array($peserta, $listIdPeserta) || count($listIdPeserta) == 0) {
+                $dataInsert = [
+                    'no_jadwal' => $_POST['no_jadwal'],
+                    'tanggal' => $_POST['tanggal'],
+                    'peserta' => $peserta
+                ];
+                $res = $penjadwalan->addPenjadwalan('penjadwalan', $dataInsert);
+            }
+        }
+
+        $msg = "Data berhasil diubah";
+
+        echo $msg;
+    }
+
+    if ($_POST['action'] == 'deleteJadwal') {
+        $where = ['no_jadwal' => $_POST['no_jadwal']];
+        $res = $penjadwalan->deletePenjadwalan('penjadwalan', $where);
+        if ($res) {
+            $msg = ['status' => 'success', 'message' => 'Data berhasil dihapus'];
+        } else {
+            $msg = ['status' => 'error', 'message' => 'Data gagal dihapus'];
+        }
+
+        echo json_encode($msg);
     }
 }

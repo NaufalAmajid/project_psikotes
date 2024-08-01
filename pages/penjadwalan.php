@@ -104,7 +104,7 @@ $penjadwalan = new Penjadwalan();
         });
     }
 
-    function deleteJadwal(id_user) {
+    function deleteJadwal(no_jadwal) {
         Swal.fire({
             title: 'Apakah Anda Yakin?',
             text: "Data yang dihapus tidak bisa dikembalikan!",
@@ -117,10 +117,10 @@ $penjadwalan = new Penjadwalan();
         }).then((result) => {
             if (result.isConfirmed) {
                 $.ajax({
-                    url: 'classes/User.php',
+                    url: 'classes/Penjadwalan.php',
                     type: 'post',
                     data: {
-                        id_user: id_user,
+                        no_jadwal: no_jadwal,
                         action: 'deleteJadwal'
                     },
                     success: function(response) {
